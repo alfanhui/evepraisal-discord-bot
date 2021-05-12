@@ -126,7 +126,7 @@ client.on('message', msg => {
                     if (utils.isNumeric(string)) {
                         if ((Number(string) > 0) && (Number(string) < 101)) {
                             percentage = Number(string)
-                            fs.write('percentage.csv', percentage.toString('utf8'))
+                            fs.write('percentage.txt', percentage.toString('utf8'))
                             msg.reply(`Percentage now changed to: ${percentage}`);
                             return null;
                         } else {
@@ -135,7 +135,7 @@ client.on('message', msg => {
                     } else {
                         if (markets.indexOf(string.toLowerCase()) > -1) {
                             market = string;
-                            fs.write('market.csv', market.toString('utf8'))
+                            fs.write('market.txt', market.toString('utf8'))
                             msg.reply(`Market now changed to: ${market}`);
                         } else {
                             throw `Unrecognised market, choose one of the following: ${JSON.stringify(markets)}`
