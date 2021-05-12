@@ -84,6 +84,25 @@ function api(msg, input) {
 
 client.on('message', msg => {
     try {
+        if (msg.content === '!int-evepraisal') {
+            if (!(accepted_channels.indexOf(msg.channel.id) > -1)) {
+                accepted_channels.push(msg.channel.id)
+                fs.write('accepted_channels.csv', accepted_channels)
+                msg.reply(`
+        Channel registered: $ { msg.channel.id }
+        `)
+            }
+            return null;
+        }
+        if (msg.content === '!rm-evepraisal') {
+            if ((accepted_channels.indexOf() > -1)) {
+                accepted_channels = accepted_channels.filter(e => e !== msg.channel.id);
+                fs.write('accepted_channels.csv', accepted_channels)
+                msg.reply(`
+        Channel unregistered `)
+            }
+            return null;
+        }
         if (!(accepted_channels.indexOf(msg.channel.id) > -1)) {
             return null;
         }
@@ -101,25 +120,6 @@ client.on('message', msg => {
                 return null;
             }
             if ((officers.indexOf(msg.author.id) > -1)) {
-                if (msg.content === '!int-evepraisal') {
-                    if (!(accepted_channels.indexOf(msg.channel.id) > -1)) {
-                        accepted_channels.push(msg.channel.id)
-                        fs.write('accepted_channels.csv', accepted_channels)
-                        msg.reply(`
-                Channel registered: $ { msg.channel.id }
-                `)
-                    }
-                    return null;
-                }
-                if (msg.content === '!rm-evepraisal') {
-                    if ((accepted_channels.indexOf() > -1)) {
-                        accepted_channels = accepted_channels.filter(e => e !== msg.channel.id);
-                        fs.write('accepted_channels.csv', accepted_channels)
-                        msg.reply(`
-                Channel unregistered `)
-                    }
-                    return null;
-                }
                 msg.reply("Hello PxKn Officer.")
                 string = msg.content.split("!")[1].split(" ")[0]
                 if (string && string != "") {
