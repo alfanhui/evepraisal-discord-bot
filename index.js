@@ -4,6 +4,7 @@ var AsciiTable = require('ascii-table')
 var materials = require('./valid-items.js');
 var utils = require('./utils.js');
 var token = require('./secret.js').token
+var fs = require('./fs.js')
 
 const client = new Discord.Client();
 const markets = ["jita", "perimeter", "universe", "amarr", "dodixie", "hek", "rens"]
@@ -12,10 +13,10 @@ accepted_materials = [].concat(
     materials.compressed_ore,
     materials.salavage,
     materials.pi_fuel)
-officers = ["774615731014205440"]
-market = "jita"
-percentage = 90
-accepted_channels = ["841665672836415584"]
+officers = fs.readCsv('officers.csv')
+accepted_channels = fs.readCsv('accepted_channels.csv')
+market = fs.read('market.txt')
+percentage = fs.read('percentage.txt')
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
@@ -30,7 +31,6 @@ function api(msg, input) {
             // parse JSON
             const response = JSON.parse(xhr.responseText);
             var table = new AsciiTable()
-            evepriasal_header = `**${market}**  @ **${percentage}%** ID **${uuid()}**`
             table.setHeading("ITEM", "1x SELL", "1x BUY", "TOTAL")
             total = 0
             unaccepted_materials = []
@@ -44,13 +44,19 @@ function api(msg, input) {
             })
             table.addRow("BUYBACK", "--", "->", Number(total.toFixed(2)).toLocaleString())
             table.removeBorder()
-            reply = `${evepriasal_header}\n\`\`\`css\n${table.toString()}\`\`\``
+            evepriasal_header = `Description: ${market}_${percentage}pc_${utils.uuid()}\t${Number(total.toFixed(2)).toLocaleString()}`
+            reply = `\n${evepriasal_header}\n${table.toString()}`
             if (unaccepted_materials.length > 0) {
                 reply += `\n**Rejected** buyback program does not accept: ${JSON.stringify(unaccepted_materials)}`
             }
-            reply = reply.replace(/"/g, " ");
+
+            if (total == 0) {
+                msg.reply("No result found")
+                msg.react("❌")
+                return null;
+            }
             msg.react("💳")
-            msg.reply(reply)
+            msg.reply(`\`\`\`css\n${reply}\`\`\``)
         }
     };
 
@@ -78,10 +84,6 @@ function api(msg, input) {
 
 client.on('message', msg => {
     try {
-        if (msg.content[0] === '!setup-evepraisal') {
-            msg.reply(`channel_id: ${msg.channel.id}`)
-            return null;
-        }
         if (!(accepted_channels.indexOf(msg.channel.id) > -1)) {
             return null;
         }
@@ -89,17 +91,42 @@ client.on('message', msg => {
         if (msg.author.id === '841662638811250699') {
             return null;
         } else if (msg.content[0] === '!') {
+            if (msg.content === "!help") {
+                msg.reply(`\`\`\`bash
+!init-evepraisal (register channel)
+!rm-evepraisal   (unregister channel)
+!market          (change market)     | example: !jita
+!number          (change percentage) | example: !90 
+                \`\`\``)
+                return null;
+            }
             if ((officers.indexOf(msg.author.id) > -1)) {
+                if (msg.content === '!int-evepraisal') {
+                    if (!(accepted_channels.indexOf(msg.channel.id) > -1)) {
+                        accepted_channels.push(msg.channel.id)
+                        fs.write('accepted_channels.csv', accepted_channels)
+                        msg.reply(`
+                Channel registered: $ { msg.channel.id }
+                `)
+                    }
+                    return null;
+                }
+                if (msg.content === '!rm-evepraisal') {
+                    if ((accepted_channels.indexOf() > -1)) {
+                        accepted_channels = accepted_channels.filter(e => e !== msg.channel.id);
+                        fs.write('accepted_channels.csv', accepted_channels)
+                        msg.reply(`
+                Channel unregistered `)
+                    }
+                    return null;
+                }
                 msg.reply("Hello PxKn Officer.")
                 string = msg.content.split("!")[1].split(" ")[0]
                 if (string && string != "") {
-                    if (string === "help") {
-                        msg.reply("To change market or percentage, type !new_market or !new_percentage")
-                        return null;
-                    }
-                    if (isNumeric(string)) {
+                    if (utils.isNumeric(string)) {
                         if ((Number(string) > 0) && (Number(string) < 101)) {
                             percentage = Number(string)
+                            fs.write('percentage.csv', percentage.toString('utf8'))
                             msg.reply(`Percentage now changed to: ${percentage}`);
                             return null;
                         } else {
@@ -108,6 +135,7 @@ client.on('message', msg => {
                     } else {
                         if (markets.indexOf(string.toLowerCase()) > -1) {
                             market = string;
+                            fs.write('market.csv', market.toString('utf8'))
                             msg.reply(`Market now changed to: ${market}`);
                         } else {
                             throw `Unrecognised market, choose one of the following: ${JSON.stringify(markets)}`
@@ -122,16 +150,20 @@ client.on('message', msg => {
             input = []
             string.map(line => {
                 items = line.match(".+?(?=(\\s[1-9][0-9]*))");
-                if (!items || !checkArray(items)) {
-                    console.log(items)
+                if (!items) {
+                    throw "Please repackaged your items, quantity required."
+                }
+                quantity = items && items[1] ? Number(items[1].trimLeft()) : 1
+                if (items[0] === "") {
                     throw "Invalid input. Enter items copied from list detail."
                 }
-                input.push({ "name": items[0].trimRight(), "quantity": Number(items[1].trimLeft()) })
+                input.push({ "name": items[0].trimRight(), "quantity": quantity })
             })
             api(msg, input)
         }
     } catch (e) {
         msg.reply(`ERROR: ${e}`);
+        msg.react("❌")
         return null;
     }
 
