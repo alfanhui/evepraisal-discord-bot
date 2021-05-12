@@ -84,7 +84,7 @@ function api(msg, input) {
 
 client.on('message', msg => {
     try {
-        if (msg.content === '!int-evepraisal') {
+        if (msg.content === '!init-evepraisal') {
             if (!(accepted_channels.indexOf(msg.channel.id) > -1)) {
                 accepted_channels.push(msg.channel.id)
                 fs.write('accepted_channels.csv', accepted_channels)
@@ -151,7 +151,7 @@ client.on('message', msg => {
             string.map(line => {
                 items = line.match(".+?(?=(\\s[1-9][0-9]*))");
                 if (!items) {
-                    throw "Please repackaged your items, quantity required."
+                    throw "Please repackage your items, quantity required."
                 }
                 quantity = items && items[1] ? Number(items[1].trimLeft()) : 1
                 if (items[0] === "") {
