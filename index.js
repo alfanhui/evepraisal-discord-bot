@@ -35,15 +35,19 @@ function api(msg, input) {
             total = 0
             unaccepted_materials = []
             response.appraisal.items.map(item => {
-                buy_total = Number(((item.prices.buy.max * item.quantity) * (100 / percentage)).toFixed(2))
+                buy_total = Number(((item.prices.buy.max * (percentage / 100) * item.quantity)).toFixed(2))
                 total += buy_total
                 if (!(accepted_materials.indexOf(item.name.toLowerCase()) > -1)) {
                     unaccepted_materials.push(item.name)
                 }
-                table.addRow(`${Number(item.quantity).toLocaleString()}x ${item.name}`, Number(item.prices.buy.max).toLocaleString(), Number(item.prices.sell.min).toLocaleString(), buy_total.toLocaleString())
+                table.addRow(`${Number(item.quantity).toLocaleString()}x ${item.name}`, Number(item.prices.sell.min * (percentage / 100)).toLocaleString(), Number(item.prices.buy.max * (percentage / 100)).toLocaleString(), buy_total.toLocaleString())
             })
             table.addRow("BUYBACK", "--", "->", Number(total.toFixed(2)).toLocaleString())
-            table.removeBorder()
+            table
+                .removeBorder()
+                .setAlign(1, AsciiTable.RIGHT)
+                .setAlign(2, AsciiTable.RIGHT)
+                .setAlign(3, AsciiTable.RIGHT)
             evepriasal_header = `Description: ${market}_${percentage}pc_${utils.uuid()}\t${Number(total.toFixed(2)).toLocaleString()}`
             reply = `\n${evepriasal_header}\n${table.toString()}`
             if (unaccepted_materials.length > 0) {
@@ -88,14 +92,12 @@ client.on('message', msg => {
             if (!(accepted_channels.indexOf(msg.channel.id) > -1)) {
                 accepted_channels.push(msg.channel.id)
                 fs.write('accepted_channels.csv', accepted_channels)
-                msg.reply(`
-        Channel registered: $ { msg.channel.id }
-        `)
+                msg.reply(`Channel registered: ${msg.channel.id}`)
             }
             return null;
         }
         if (msg.content === '!rm-evepraisal') {
-            if ((accepted_channels.indexOf() > -1)) {
+            if ((accepted_channels.indexOf(msg.channel.id) > -1)) {
                 accepted_channels = accepted_channels.filter(e => e !== msg.channel.id);
                 fs.write('accepted_channels.csv', accepted_channels)
                 msg.reply(`
@@ -149,11 +151,11 @@ client.on('message', msg => {
             string = msg.content.split("\n");
             input = []
             string.map(line => {
-                items = line.match(".+?(?=\\s[1-9][,0-9]*)");
+                items = line.match(".+?(?=(\\s[1-9][,0-9]*))");
                 if (!items) {
                     throw "Please repackage your items, quantity required."
                 }
-                quantity = items && items[1] ? Number(items[1].trimLeft()) : 1
+                quantity = items && items[1] ? Number(items[1].trimLeft().replace(',', '')) : 1
                 if (items[0] === "") {
                     throw "Invalid input. Enter items copied from list detail."
                 }
