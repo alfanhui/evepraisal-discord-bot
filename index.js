@@ -149,7 +149,7 @@ client.on('message', msg => {
             string = msg.content.split("\n");
             input = []
             string.map(line => {
-                items = line.match(".+?(?=(\\s[1-9][,0-9]*))");
+                items = line.match(".+?(?=\s[1-9][,0-9]*\s)");
                 if (!items) {
                     throw "Please repackage your items, quantity required."
                 }
