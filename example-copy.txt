@@ -1,0 +1,7 @@
+Iron Charge S	461	Hybrid Charge	Small		1.15 m3	3,033.38 ISK
+Metal Scraps	9	Commodities			0.09 m3	13,809.06 ISK
+Plutonium Charge S	100	Hybrid Charge	Small		0.25 m3	1,676.00 ISK
+
+OR
+
+Iron Charge S 1
