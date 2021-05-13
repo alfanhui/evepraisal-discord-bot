@@ -122,14 +122,13 @@ client.on('message', msg => {
                 return null;
             }
             if ((officers.indexOf(msg.author.id) > -1)) {
-                msg.reply("Hello PxKn Officer.")
                 string = msg.content.split("!")[1].split(" ")[0]
                 if (string && string != "") {
                     if (utils.isNumeric(string)) {
                         if ((Number(string) > 0) && (Number(string) < 101)) {
                             percentage = Number(string)
                             fs.write('percentage.txt', percentage.toString('utf8'))
-                            msg.reply(`Percentage now changed to: ${percentage}`);
+                            msg.reply(`"Hello PxKn Officer.\n"Percentage now changed to: ${percentage}`);
                             return null;
                         } else {
                             throw "Percentage only between 1 and 100 allowed."
@@ -138,7 +137,7 @@ client.on('message', msg => {
                         if (markets.indexOf(string.toLowerCase()) > -1) {
                             market = string;
                             fs.write('market.txt', market.toString('utf8'))
-                            msg.reply(`Market now changed to: ${market}`);
+                            msg.reply(`"Hello PxKn Officer.\n"Market now changed to: ${market}`);
                         } else {
                             throw `Unrecognised market, choose one of the following: ${JSON.stringify(markets)}`
                         }
@@ -152,14 +151,13 @@ client.on('message', msg => {
             input = []
             string.map(line => {
                 items = line.match(".+?(?=(\\s[1-9][,0-9]*))");
-                if (!items) {
-                    throw "Please repackage your items, quantity required."
+                quantity = 1
+                if (!items || items[0] === "") {
+                    items = [line]
+                } else {
+                    quantity = Number(items[1].trim().replace(',', ''))
                 }
-                quantity = items && items[1] ? Number(items[1].trimLeft().replace(',', '')) : 1
-                if (items[0] === "") {
-                    throw "Invalid input. Enter items copied from list detail."
-                }
-                input.push({ "name": items[0].trimRight(), "quantity": quantity })
+                input.push({ "name": items[0].trim(), "quantity": quantity })
             })
             api(msg, input)
         }
