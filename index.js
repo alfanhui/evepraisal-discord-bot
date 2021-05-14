@@ -116,29 +116,33 @@ client.on('message', msg => {
         if (!(accepted_channels.indexOf(msg.channel.id) > -1)) {
             return null;
         }
-        switch (msg.content[0]) {
-            case '!':
-                adminReply(msg)
-                break;
-            default:
-                contentArray = msg.content.split("\n");
-                input = []
-                contentArray.map(line => {
-                    items = line.match(".+?(?=(\\s[1-9][,0-9]*))");
-                    quantity = 1
-                    if (!items || items[0] === "") {
-                        items = [line]
-                    } else {
-                        quantity = Number(items[1].trim().replace(',', ''))
-                    }
-                    input.push({ "name": items[0].trim(), "quantity": quantity })
-                })
-                api(msg, input)
-                break;
+        try {
+            switch (msg.content[0]) {
+                case '!':
+                    adminReply(msg)
+                    break;
+                default:
+                    contentArray = msg.content.split("\n");
+                    input = []
+                    contentArray.map(line => {
+                        items = line.match(".+?(?=(\\s[1-9][,0-9]*))");
+                        quantity = 1
+                        if (!items || items[0] === "") {
+                            items = [line]
+                        } else {
+                            quantity = Number(items[1].trim().replace(',', ''))
+                        }
+                        input.push({ "name": items[0].trim(), "quantity": quantity })
+                    })
+                    api(msg, input)
+                    break;
+            }
+        } catch (e) {
+            msg.reply(`ERROR: ${e}`);
+            msg.react("❌")
+            return null;
         }
     } catch (e) {
-        msg.reply(`ERROR: ${e}`);
-        msg.react("❌")
         return null;
     }
 });
