@@ -24,6 +24,13 @@ percentage = fs.read(PERCENTAGE_FILENAME)
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
+    client.user.setPresence({
+        status: "online", //You can show online, idle....
+        game: {
+            name: "Playing EVE Online", //The message shown
+            type: "PLAYING" //PLAYING: WATCHING: LISTENING: STREAMING:
+        }
+    });
 });
 
 function api(msg, input) {
