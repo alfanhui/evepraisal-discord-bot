@@ -27,7 +27,7 @@ client.on('ready', () => {
     client.user.setPresence({
         status: "online", //You can show online, idle....
         activity: {
-            name: "Playing EVEpraisal", //The message shown
+            name: "Evepraisal", //The message shown
             type: "PLAYING" //PLAYING: WATCHING: LISTENING: STREAMING:
         }
     });
