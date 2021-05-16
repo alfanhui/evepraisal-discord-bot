@@ -66,8 +66,7 @@ function api(msg, input) {
             }
 
             if (total == 0) {
-                msg.reply("No result found")
-                msg.react("❌")
+                msg.react("❓")
                 return null;
             }
             msg.react("💳")
