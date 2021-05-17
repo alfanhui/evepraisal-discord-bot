@@ -4,8 +4,8 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start-dev": "npx nodemon --inspect index.js",
-        "start": "npx nodemon index.js",
+        "start-dev": "nodemon --inspect index.js",
+        "start": "nodemon index.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "",
