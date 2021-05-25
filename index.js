@@ -123,6 +123,7 @@ client.on('message', msg => {
         }
         try {
             switch (msg.content[0]) {
+                case '@':
                 case '!':
                     adminReply(msg)
                     break;
@@ -153,8 +154,7 @@ client.on('message', msg => {
                     break;
             }
         } catch (e) {
-            msg.reply(`ERROR: ${e}`);
-            msg.react("❌")
+            console.log("Error: ", e)
             return null;
         }
     } catch (e) {
