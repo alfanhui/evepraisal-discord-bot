@@ -66,7 +66,6 @@ function api(msg, input) {
             }
 
             if (total == 0) {
-                msg.react("❓")
                 return null;
             }
             msg.react("💳")
@@ -133,12 +132,20 @@ client.on('message', msg => {
                     contentArray.map(line => {
                         items = line.match(".+?(?=(\\s[1-9][,0-9]*))");
                         quantity = 1
+                        item_name = ""
                         if (!items || items[0] === "") {
-                            items = [line]
+                            items = line.match("[1-9][,0-9]*(?=(\s.*))");
+                            if (!items || items[0] === "") {
+                                item_name = line.trim()
+                            } else {
+                                quantity = Number(items[0].trim().replace(',', ''));
+                                item_name = items[1].trim();
+                            }
                         } else {
+                            item_name = items[0].trim()
                             quantity = Number(items[1].trim().replace(',', ''))
                         }
-                        input.push({ "name": items[0].trim(), "quantity": quantity })
+                        input.push({ "name": item_name, "quantity": quantity })
                     })
                     api(msg, input)
                     break;
