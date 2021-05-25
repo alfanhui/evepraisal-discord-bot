@@ -130,20 +130,22 @@ client.on('message', msg => {
                     contentArray = msg.content.split("\n");
                     input = []
                     contentArray.map(line => {
-                        items = line.match(".+?(?=(\\s[1-9][,0-9]*))");
+                        line = line.trim().replace(/[\s]{2,}/g, " ") //remove extra spaces
+                        items = line.trim().match(".+?(?=(\\s[1-9][,0-9]*))");
                         quantity = 1
                         item_name = ""
                         if (!items || items[0] === "") {
-                            items = line.match("[1-9][,0-9]*(?=(\s.*))");
+                            items = line.trim().match("([1-9][,0-9]*)|\\d\\s|\\s\\d\\s|\\s(?=(.*))");
                             if (!items || items[0] === "") {
-                                item_name = line.trim()
+                                item_name = line //I guess theres no numbers, so treat as solo
                             } else {
-                                quantity = Number(items[0].trim().replace(',', ''));
-                                item_name = items[1].trim();
+                                line = line.replace(/[x*]\s/, " ")
+                                quantity = Number(line.match("[1-9][,0-9]*")[0].replace(/[,]/g, ''))
+                                item_name = line.match("([1-9][,0-9]*)(?=(\\s.*))")[2].trim();
                             }
                         } else {
                             item_name = items[0].trim()
-                            quantity = Number(items[1].trim().replace(',', ''))
+                            quantity = Number(items[1].trim().replace(/[,]/g, ''))
                         }
                         input.push({ "name": item_name, "quantity": quantity })
                     })
