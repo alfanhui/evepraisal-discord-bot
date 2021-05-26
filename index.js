@@ -81,7 +81,7 @@ client.on('message', msg => {
                         item_name = ""
                         if (!line_reg || line_reg[0] === "") {
                             line_reg = line.trim().match("([1-9][,0-9]*)|\\d\\s|\\s\\d\\s|\\s(?=(.*))");
-                            if (!line_reg || line_reg[0] === "") {
+                            if (!line_reg || line_reg[0].trim() === "") {
                                 item_name = line //I guess theres no numbers, so treat as solo
                             } else {
                                 line = line.replace(/[x*]\s/, " ")
