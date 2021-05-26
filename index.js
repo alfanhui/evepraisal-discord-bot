@@ -1,27 +1,26 @@
 const Discord = require('discord.js');
-var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-var AsciiTable = require('ascii-table')
-var materials = require('./valid-items.js');
+const FuzzySet = require('fuzzyset.js');
+var api = require('./api.js').api;
+var fs = require('./fs.js');
 var utils = require('./utils.js');
-var token = require('./secret.js').token
-var fs = require('./fs.js')
 
-const client = new Discord.Client();
+//data
+const items = require('./items.js').items;
+const token = require('./secret.js').token
+
+var client = new Discord.Client();
+var fuzzy = FuzzySet(items, false, 1, 10);
+
 const markets = ["jita", "perimeter", "universe", "amarr", "dodixie", "hek", "rens"]
 const ACCEPTED_CHANNELS_FILENAME = 'accepted_channels.csv';
 const OFFICERS_FILENAME = 'officers.csv';
 const MARKET_FILENAME = 'market.txt';
 const PERCENTAGE_FILENAME = 'percentage.txt';
-const DISCORD_MAX_MESSAGE_LENGTH = 1800;
-accepted_materials = [].concat(
-    materials.ore,
-    materials.compressed_ore,
-    materials.salavage,
-    materials.pi_fuel)
-officers = fs.readCsv(OFFICERS_FILENAME)
-accepted_channels = fs.readCsv(ACCEPTED_CHANNELS_FILENAME)
-market = fs.read(MARKET_FILENAME)
-percentage = fs.read(PERCENTAGE_FILENAME)
+
+let officers = fs.readCsv(OFFICERS_FILENAME)
+let accepted_channels = fs.readCsv(ACCEPTED_CHANNELS_FILENAME)
+let market = fs.read(MARKET_FILENAME)
+let percentage = fs.read(PERCENTAGE_FILENAME)
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
@@ -34,92 +33,6 @@ client.on('ready', () => {
     });
 });
 
-function api(msg, input) {
-    const xhr = new XMLHttpRequest();
-    // listen for `load` event
-    xhr.onload = () => {
-        // print JSON response
-        try {
-
-            if (xhr.status >= 200 && xhr.status < 300) {
-                // parse JSON
-                const response = JSON.parse(xhr.responseText);
-                var table = new AsciiTable()
-                table.setHeading("ITEM", "1x SELL", "1x BUY", "TOTAL")
-                total = 0
-                unaccepted_materials = []
-                response.appraisal.items.map(item => {
-                    buy_total = Number(((item.prices.buy.max * (percentage / 100) * item.quantity)).toFixed(2))
-                    total += buy_total
-                    if (!(accepted_materials.indexOf(item.name.toLowerCase()) > -1)) {
-                        unaccepted_materials.push(item.name)
-                    }
-                    table.addRow(`${Number(item.quantity).toLocaleString()}x ${item.name}`, Number(item.prices.sell.min * (percentage / 100)).toLocaleString(), Number(item.prices.buy.max * (percentage / 100)).toLocaleString(), buy_total.toLocaleString())
-                })
-                table.addRow("BUYBACK", "--", "->", Number(total.toFixed(2)).toLocaleString())
-                table
-                    .removeBorder()
-                    .setAlign(1, AsciiTable.RIGHT)
-                    .setAlign(2, AsciiTable.RIGHT)
-                    .setAlign(3, AsciiTable.RIGHT)
-                evepriasal_header = `Description: ${market}_${percentage}pc_${utils.uuid()}\t${Number(total.toFixed(2)).toLocaleString()}`
-                if (table.toString().length > DISCORD_MAX_MESSAGE_LENGTH) {
-                    division_count = Math.ceil(table.toString().length / DISCORD_MAX_MESSAGE_LENGTH)
-                    split_rows = table.__rows.length / division_count
-                    temp = table.toString().split('\n')
-                    reply = [];
-                    while (temp.length > 0) {
-                        reply.push(temp.splice(0, split_rows));
-                    }
-                } else {
-                    reply = [
-                        [`\n${table.toString()}`]
-                    ]
-                }
-                if (unaccepted_materials.length > 0) {
-                    reply[reply.length - 1].push(`\n**Rejected** buyback program does not accept: ${JSON.stringify(unaccepted_materials)}`)
-                }
-
-                if (total == 0) { //invalid response
-                    return null;
-                }
-                msg.react("💳")
-                if (reply.length == 1) {
-                    reply = reply.join("\n")
-                    msg.reply(`\`\`\`css\n${evepriasal_header}\n${reply}\`\`\``)
-                } else {
-                    for (let message in reply) {
-                        joined = reply[message].join("\n");
-                        if (message == 0) {
-                            msg.reply(`\`\`\`css\n${evepriasal_header}\n${joined}\`\`\``)
-                        } else {
-                            msg.channel.send(`\`\`\`css\n${joined}\`\`\``)
-                        }
-                    }
-                }
-            }
-        } catch (e) {
-            console.error("Error: ", e)
-            return null;
-        }
-    };
-
-    // create a JSON object
-    const json = {
-        "market_name": market,
-        "items": input
-    };
-
-    // open request
-    xhr.open('POST', 'https://evepraisal.com/appraisal/structured.json');
-
-    // set Content-Type header
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.setRequestHeader('User-Agent', 'PixelKnightsDiscordBot');
-
-    // send rquest with JSON payload
-    xhr.send(JSON.stringify(json));
-}
 
 client.on('message', msg => {
     try {
@@ -163,12 +76,12 @@ client.on('message', msg => {
                     input = []
                     contentArray.map(line => {
                         line = line.trim().replace(/[\s]{2,}/g, " ") //remove extra spaces
-                        items = line.trim().match(".+?(?=(\\s[1-9][,0-9]*))");
+                        line_reg = line.trim().match(".+?(?=(\\s[1-9][,0-9]*))");
                         quantity = 1
                         item_name = ""
-                        if (!items || items[0] === "") {
-                            items = line.trim().match("([1-9][,0-9]*)|\\d\\s|\\s\\d\\s|\\s(?=(.*))");
-                            if (!items || items[0] === "") {
+                        if (!line_reg || line_reg[0] === "") {
+                            line_reg = line.trim().match("([1-9][,0-9]*)|\\d\\s|\\s\\d\\s|\\s(?=(.*))");
+                            if (!line_reg || line_reg[0] === "") {
                                 item_name = line //I guess theres no numbers, so treat as solo
                             } else {
                                 line = line.replace(/[x*]\s/, " ")
@@ -176,12 +89,18 @@ client.on('message', msg => {
                                 item_name = line.match("([1-9][,0-9]*)(?=(\\s.*))")[2].trim();
                             }
                         } else {
-                            item_name = items[0].trim()
-                            quantity = Number(items[1].trim().replace(/[,]/g, ''))
+                            item_name = line_reg[0].trim()
+                            quantity = Number(line_reg[1].trim().replace(/[,]/g, ''))
                         }
-                        input.push({ "name": item_name, "quantity": quantity })
+                        //Check if item_name is actually an item.
+                        found_item = fuzzy.get(item_name, null, 0.70);
+                        if (!found_item) {
+                            console.error(`Could not find eve item match for ${item_name}`)
+                            return null;
+                        }
+                        input.push({ "name": found_item[0][1], "quantity": quantity })
                     })
-                    api(msg, input)
+                    api(msg, input, market, percentage)
                     break;
             }
         } catch (e) {
