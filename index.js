@@ -9,7 +9,7 @@ const items = require('./items.js').items;
 const token = require('./secret.js').token
 
 var client = new Discord.Client();
-var fuzzy = FuzzySet(items, false, 1, 10);
+var fuzzy = FuzzySet(items, false);
 
 const markets = ["jita", "perimeter", "universe", "amarr", "dodixie", "hek", "rens"]
 const ACCEPTED_CHANNELS_FILENAME = 'accepted_channels.csv';

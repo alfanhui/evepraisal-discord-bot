@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "start-dev": "nodemon --inspect index.js",
-        "start": "nodemon index.js",
+        "start": "nodemon --max-old-space-size=512 index.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "",
