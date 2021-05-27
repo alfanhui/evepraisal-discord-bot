@@ -23,7 +23,7 @@ const faek = [
     { "name": "Nerve Sticks", "quantity": 420 },
     { "name": "Sooth Sayer", "quantity": 420 },
     { "name": "Victo", "quantity": 420 },
-    { "name": "X-Instinct", "quantity": 42 }
+    { "name": "X-Instinct", "quantity": 420 }
 ]
 
 const florinflynn = [
@@ -31,7 +31,7 @@ const florinflynn = [
     { "name": "Thick Blue Ice", "quantity": 10 }
 ]
 
-const lalettechelien = [
+const lalette_chelien = [
     { "name": "Iridium Charge S", "quantity": 107 },
     { "name": "Uranium Charge S", "quantity": 69 },
     { "name": "Modal Light Ion Particle Accelerator I", "quantity": 1 },
@@ -77,7 +77,7 @@ const pixelmoonbreeze = [
 
 module.exports = {
     'pixelmoonbreeze': pixelmoonbreeze,
-    'lalettechelien': lalettechelien,
+    'lalette_chelien': lalette_chelien,
     'faek': faek,
     'blasphemour': blasphemour,
     'edwardsmitholgidar': edwardsmitholgidar,
