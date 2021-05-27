@@ -31,7 +31,7 @@ const florinflynn = [
     { "name": "Thick Blue Ice", "quantity": 10 }
 ]
 
-const latettechelien = [
+const lalettechelien = [
     { "name": "Iridium Charge S", "quantity": 107 },
     { "name": "Uranium Charge S", "quantity": 69 },
     { "name": "Modal Light Ion Particle Accelerator I", "quantity": 1 },
@@ -77,7 +77,7 @@ const pixelmoonbreeze = [
 
 module.exports = {
     'pixelmoonbreeze': pixelmoonbreeze,
-    'latettechelien': latettechelien,
+    'lalettechelien': lalettechelien,
     'faek': faek,
     'blasphemour': blasphemour,
     'edwardsmitholgidar': edwardsmitholgidar,
