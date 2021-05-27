@@ -67,9 +67,9 @@ client.on('message', msg => {
             return null;
         }
         //Mentions to specific corp members will give a suprise!
-        if (msg.cleanContent[0] === "@") {
+        if (msg.content[1] === "@") {
             //Substring 2 because of mysterious hidden char
-            username = msg.cleanContent.toLowerCase().trim().substring(2).replace(" ", "");
+            username = msg.cleanContent.toLowerCase().trim().substring(2).replace(/[\s]/g, "");
             input = corp_members[username];
             if (input) {
                 api(msg, input, market, percentage)
@@ -86,32 +86,32 @@ client.on('message', msg => {
                     contentArray = msg.content.split("\n");
                     input = []
                     contentArray.map(line => {
-                            line = line.trim().replace(/[\s]{2,}/g, " ") //remove extra spaces
-                            line_reg = line.trim().match(".+?(?=(\\s[1-9][,0-9]*))");
-                            quantity = 1
-                            item_name = ""
-                            if (!line_reg || line_reg[0] === "") {
-                                line_reg = line.trim().match("([1-9][,0-9]*)|\\d\\s|\\s\\d\\s|\\s(?=(.*))");
-                                if (!line_reg || line_reg[0].trim() === "") {
-                                    item_name = line //I guess theres no numbers, so treat as solo
-                                } else {
-                                    line = line.replace(/[x*]\s/, " ")
-                                    quantity = Number(line.match("[1-9][,0-9]*")[0].replace(/[,]/g, ''))
-                                    item_name = line.match("([1-9][,0-9]*)(?=(\\s.*))")[2].trim();
-                                }
+                        line = line.trim().replace(/[\s]{2,}/g, " ") //remove extra spaces
+                        line_reg = line.trim().match(".+?(?=(\\s[1-9][,0-9]*))");
+                        quantity = 1
+                        item_name = ""
+                        if (!line_reg || line_reg[0] === "") {
+                            line_reg = line.trim().match("([1-9][,0-9]*)|\\d\\s|\\s\\d\\s|\\s(?=(.*))");
+                            if (!line_reg || line_reg[0].trim() === "") {
+                                item_name = line //I guess theres no numbers, so treat as solo
                             } else {
-                                item_name = line_reg[0].trim()
-                                quantity = Number(line_reg[1].trim().replace(/[,]/g, ''))
+                                line = line.replace(/[x*]\s/, " ")
+                                quantity = Number(line.match("[1-9][,0-9]*")[0].replace(/[,]/g, ''))
+                                item_name = line.match("([1-9][,0-9]*)(?=(\\s.*))")[2].trim();
                             }
-                            //Check if item_name is actually an item.
-                            found_item = fuzzy.get(item_name, null, 0.70);
-                            if (!found_item) {
-                                console.error(`Could not find eve item match for ${item_name}`)
-                                return null;
-                            }
-                            input.push({ "name": found_item[0][1], "quantity": quantity })
-                        })
-                        //api(msg, input, market, percentage)
+                        } else {
+                            item_name = line_reg[0].trim()
+                            quantity = Number(line_reg[1].trim().replace(/[,]/g, ''))
+                        }
+                        //Check if item_name is actually an item.
+                        found_item = fuzzy.get(item_name, null, 0.70);
+                        if (!found_item) {
+                            console.error(`Could not find eve item match for ${item_name}`)
+                            return null;
+                        }
+                        input.push({ "name": found_item[0][1], "quantity": quantity })
+                    })
+                    api(msg, input, market, percentage)
                     break;
             }
         } catch (e) {
