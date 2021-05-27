@@ -41,14 +41,13 @@ client.on('message', msg => {
         if (msg.author.id === '841662638811250699') {
             return null;
         }
-        if (msg.content[1] === "@") {
+        if (msg.content[1] === "@") { //Mentions to specific corp members will give a suprise!
             username = msg.cleanContent.trim().substring(1).replace(" ", "_");
             input = corp_members[username];
             if (input) {
                 api(msg, input, market, percentage)
             }
             return null;
-
         }
         regex = /^[!a-zA-Z0-9]+$/;
         if (!msg.content[0].match(regex)) {
