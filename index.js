@@ -41,7 +41,7 @@ client.on('message', msg => {
         if (msg.author.id === '841662638811250699') {
             return null;
         }
-        regex = /^[!a-zA-Z0-9]+$/;
+        regex = /^[!a-zA-Z0-9<]+$/;
         if (!msg.content[0].match(regex)) {
             return null;
         }
@@ -66,8 +66,10 @@ client.on('message', msg => {
         if (!(accepted_channels.indexOf(msg.channel.id) > -1)) {
             return null;
         }
-        if (msg.content[1] === "@") { //Mentions to specific corp members will give a suprise!
-            username = msg.cleanContent.trim().substring(1).replace(" ", "_");
+        //Mentions to specific corp members will give a suprise!
+        if (msg.cleanContent[0] === "@") {
+            //Substring 2 because of mysterious hidden char
+            username = msg.cleanContent.toLowerCase().trim().substring(2).replace(" ", "");
             input = corp_members[username];
             if (input) {
                 api(msg, input, market, percentage)
@@ -117,6 +119,7 @@ client.on('message', msg => {
             return null;
         }
     } catch (e) {
+        console.error(e)
         return null;
     }
 });

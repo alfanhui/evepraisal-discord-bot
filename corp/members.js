@@ -1,10 +1,10 @@
-const Blasphemour = [
+const blasphemour = [
     { "name": "Criminal DNA", "quantity": 1 },
     { "name": "To Kill the Risen Dead", "quantity": 1 },
     { "name": "Spiked Quafe", "quantity": 1 }
 ]
 
-const Edward_Smith_Olgidar = [
+const edwardsmitholgidar = [
     { "name": "Exotic Dancers, Male", "quantity": 69 },
     { "name": "Toxic Waste", "quantity": 1000 },
     { "name": "Spiced Wine", "quantity": 20 },
@@ -13,7 +13,7 @@ const Edward_Smith_Olgidar = [
     { "name": "Women's 'Hover' Tights (red)", "quantity": 1 }
 ]
 
-const Faek = [
+const faek = [
     { "name": "Blue Pill", "quantity": 420 },
     { "name": "Crash", "quantity": 1 },
     { "name": "Crystal Egg", "quantity": 420 },
@@ -26,12 +26,12 @@ const Faek = [
     { "name": "X-Instinct", "quantity": 42 }
 ]
 
-const Florin_Flynn = [
+const florinflynn = [
     { "name": "Blue Ice", "quantity": 1850 },
     { "name": "Thick Blue Ice", "quantity": 10 }
 ]
 
-const latette_chelian = [
+const latettechelian = [
     { "name": "Iridium Charge S", "quantity": 107 },
     { "name": "Uranium Charge S", "quantity": 69 },
     { "name": "Modal Light Ion Particle Accelerator I", "quantity": 1 },
@@ -70,16 +70,16 @@ const latette_chelian = [
     { "name": "Gnosis", "quantity": 1 }
 ]
 
-const Pixelmoon = [
+const pixelmoon = [
     { "name": "Kronos", "quantity": 2 },
     { "name": "Livestock", "quantity": 1 }
 ]
 
 module.exports = {
-    Pixelmoon: Pixelmoon,
-    latette_chelian: latette_chelian,
-    Faek: Faek,
-    Blasphemour: Blasphemour,
-    Edward_Smith_Olgidar: Edward_Smith_Olgidar,
-    Florin_Flynn: Florin_Flynn
+    'pixelmoon': pixelmoon,
+    'latettechelian': latettechelian,
+    'faek': faek,
+    'blasphemour': blasphemour,
+    'edwardsmitholgidar': edwardsmitholgidar,
+    'florinflynn': florinflynn
 }
