@@ -31,7 +31,7 @@ const florinflynn = [
     { "name": "Thick Blue Ice", "quantity": 10 }
 ]
 
-const latettechelian = [
+const latettechelien = [
     { "name": "Iridium Charge S", "quantity": 107 },
     { "name": "Uranium Charge S", "quantity": 69 },
     { "name": "Modal Light Ion Particle Accelerator I", "quantity": 1 },
