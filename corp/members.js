@@ -1,0 +1,85 @@
+const Blasphemour = [
+    { "name": "Criminal DNA", "quantity": 1 },
+    { "name": "To Kill the Risen Dead", "quantity": 1 },
+    { "name": "Spiked Quafe", "quantity": 1 }
+]
+
+const Edward_Smith_Olgidar = [
+    { "name": "Exotic Dancers, Male", "quantity": 69 },
+    { "name": "Toxic Waste", "quantity": 1000 },
+    { "name": "Spiced Wine", "quantity": 20 },
+    { "name": "Dairy Products", "quantity": 3 },
+    { "name": "Hardwiring - Zainou 'Sharpshooter' ZMX11", "quantity": 1 },
+    { "name": "Women's 'Hover' Tights (red)", "quantity": 1 }
+]
+
+const Faek = [
+    { "name": "Blue Pill", "quantity": 420 },
+    { "name": "Crash", "quantity": 1 },
+    { "name": "Crystal Egg", "quantity": 420 },
+    { "name": "Drop", "quantity": 420 },
+    { "name": "Exile", "quantity": 420 },
+    { "name": "Mindflood", "quantity": 420 },
+    { "name": "Nerve Sticks", "quantity": 420 },
+    { "name": "Sooth Sayer", "quantity": 420 },
+    { "name": "Victo", "quantity": 420 },
+    { "name": "X-Instinct", "quantity": 42 }
+]
+
+const Florin_Flynn = [
+    { "name": "Blue Ice", "quantity": 1850 },
+    { "name": "Thick Blue Ice", "quantity": 10 }
+]
+
+const latette_chelian = [
+    { "name": "Iridium Charge S", "quantity": 107 },
+    { "name": "Uranium Charge S", "quantity": 69 },
+    { "name": "Modal Light Ion Particle Accelerator I", "quantity": 1 },
+    { "name": "Civilian Gatling Railgun", "quantity": 1 },
+    { "name": "Modal Light Ion Particle Accelerator I", "quantity": 1 },
+    { "name": "Snowstar Crystalburst Firework", "quantity": 41 },
+    { "name": "Iridium Charge S", "quantity": 107 },
+    { "name": "Festival Launcher", "quantity": 1 },
+    { "name": "Light Electron Blaster I", "quantity": 1 },
+    { "name": "Fleeting Compact Stasis Webifier", "quantity": 1 },
+    { "name": "Small F-S9 Regolith Compact Shield Extender", "quantity": 2 },
+    { "name": "Small Clarity Ward Enduring Shield Booster", "quantity": 1 },
+    { "name": "5MN Cold-Gas Enduring Microwarpdrive", "quantity": 1 },
+    { "name": "Drone Damage Amplifier I", "quantity": 2 },
+    { "name": "Damage Control I", "quantity": 1 },
+    { "name": "Medium Capacitor Control Circuit II", "quantity": 1 },
+    { "name": "Medium Capacitor Control Circuit I", "quantity": 1 },
+    { "name": "Hobgoblin I", "quantity": 1 },
+    { "name": "Acolyte I", "quantity": 2 },
+    { "name": "Civilian Hobgoblin", "quantity": 1 },
+    { "name": "Water", "quantity": 10 },
+    { "name": "Water", "quantity": 10 },
+    { "name": "Metal Scraps", "quantity": 101 },
+    { "name": "Metal Scraps", "quantity": 3 },
+    { "name": "Shadow Lead Charge S", "quantity": 120 },
+    { "name": "Dairy Products", "quantity": 10 },
+    { "name": "Iridium Charge S", "quantity": 260 },
+    { "name": "Caldari Navy Midshipman Insignia I", "quantity": 1 },
+    { "name": "Scourge Light Missile", "quantity": 200 },
+    { "name": "Small Radiative Scoped Remote Capacitor Transmitter", "quantity": 1 },
+    { "name": "Wheat", "quantity": 10 },
+    { "name": "Lead Charge S", "quantity": 5 },
+    { "name": "X5 Enduring Stasis Webifier", "quantity": 1 },
+    { "name": "Frozen Food", "quantity": 10 },
+    { "name": "Holoreels", "quantity": 10 },
+    { "name": "Gnosis", "quantity": 1 }
+]
+
+const Pixelmoon = [
+    { "name": "Kronos", "quantity": 2 },
+    { "name": "Livestock", "quantity": 1 }
+]
+
+module.exports = {
+    Pixelmoon: Pixelmoon,
+    latette_chelian: latette_chelian,
+    Faek: Faek,
+    Blasphemour: Blasphemour,
+    Edward_Smith_Olgidar: Edward_Smith_Olgidar,
+    Florin_Flynn: Florin_Flynn
+}

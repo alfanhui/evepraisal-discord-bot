@@ -6,7 +6,8 @@ var utils = require('./utils.js');
 
 //data
 const items = require('./items.js').items;
-const token = require('./secret.js').token
+const token = require('./secret.js').token;
+const corp_members = require('./corp/members');
 
 var client = new Discord.Client();
 var fuzzy = FuzzySet(items, false);
@@ -39,6 +40,15 @@ client.on('message', msg => {
         //don't react to messages from itself
         if (msg.author.id === '841662638811250699') {
             return null;
+        }
+        if (msg.content[1] === "@") {
+            username = msg.cleanContent.trim().substring(1).replace(" ", "_");
+            input = corp_members[username];
+            if (input) {
+                api(msg, input, market, percentage)
+            }
+            return null;
+
         }
         regex = /^[!a-zA-Z0-9]+$/;
         if (!msg.content[0].match(regex)) {
@@ -75,32 +85,32 @@ client.on('message', msg => {
                     contentArray = msg.content.split("\n");
                     input = []
                     contentArray.map(line => {
-                        line = line.trim().replace(/[\s]{2,}/g, " ") //remove extra spaces
-                        line_reg = line.trim().match(".+?(?=(\\s[1-9][,0-9]*))");
-                        quantity = 1
-                        item_name = ""
-                        if (!line_reg || line_reg[0] === "") {
-                            line_reg = line.trim().match("([1-9][,0-9]*)|\\d\\s|\\s\\d\\s|\\s(?=(.*))");
-                            if (!line_reg || line_reg[0].trim() === "") {
-                                item_name = line //I guess theres no numbers, so treat as solo
+                            line = line.trim().replace(/[\s]{2,}/g, " ") //remove extra spaces
+                            line_reg = line.trim().match(".+?(?=(\\s[1-9][,0-9]*))");
+                            quantity = 1
+                            item_name = ""
+                            if (!line_reg || line_reg[0] === "") {
+                                line_reg = line.trim().match("([1-9][,0-9]*)|\\d\\s|\\s\\d\\s|\\s(?=(.*))");
+                                if (!line_reg || line_reg[0].trim() === "") {
+                                    item_name = line //I guess theres no numbers, so treat as solo
+                                } else {
+                                    line = line.replace(/[x*]\s/, " ")
+                                    quantity = Number(line.match("[1-9][,0-9]*")[0].replace(/[,]/g, ''))
+                                    item_name = line.match("([1-9][,0-9]*)(?=(\\s.*))")[2].trim();
+                                }
                             } else {
-                                line = line.replace(/[x*]\s/, " ")
-                                quantity = Number(line.match("[1-9][,0-9]*")[0].replace(/[,]/g, ''))
-                                item_name = line.match("([1-9][,0-9]*)(?=(\\s.*))")[2].trim();
+                                item_name = line_reg[0].trim()
+                                quantity = Number(line_reg[1].trim().replace(/[,]/g, ''))
                             }
-                        } else {
-                            item_name = line_reg[0].trim()
-                            quantity = Number(line_reg[1].trim().replace(/[,]/g, ''))
-                        }
-                        //Check if item_name is actually an item.
-                        found_item = fuzzy.get(item_name, null, 0.70);
-                        if (!found_item) {
-                            console.error(`Could not find eve item match for ${item_name}`)
-                            return null;
-                        }
-                        input.push({ "name": found_item[0][1], "quantity": quantity })
-                    })
-                    api(msg, input, market, percentage)
+                            //Check if item_name is actually an item.
+                            found_item = fuzzy.get(item_name, null, 0.70);
+                            if (!found_item) {
+                                console.error(`Could not find eve item match for ${item_name}`)
+                                return null;
+                            }
+                            input.push({ "name": found_item[0][1], "quantity": quantity })
+                        })
+                        //api(msg, input, market, percentage)
                     break;
             }
         } catch (e) {
