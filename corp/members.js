@@ -70,13 +70,13 @@ const latettechelian = [
     { "name": "Gnosis", "quantity": 1 }
 ]
 
-const pixelmoon = [
+const pixelmoonbreeze = [
     { "name": "Kronos", "quantity": 2 },
     { "name": "Livestock", "quantity": 1 }
 ]
 
 module.exports = {
-    'pixelmoon': pixelmoon,
+    'pixelmoonbreeze': pixelmoonbreeze,
     'latettechelian': latettechelian,
     'faek': faek,
     'blasphemour': blasphemour,
