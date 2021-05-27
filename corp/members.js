@@ -77,7 +77,7 @@ const pixelmoonbreeze = [
 
 module.exports = {
     'pixelmoonbreeze': pixelmoonbreeze,
-    'latettechelian': latettechelian,
+    'latettechelien': latettechelien,
     'faek': faek,
     'blasphemour': blasphemour,
     'edwardsmitholgidar': edwardsmitholgidar,
