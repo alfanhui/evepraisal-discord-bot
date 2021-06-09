@@ -10,7 +10,9 @@ const edwardsmitholgidar = [
     { "name": "Spiced Wine", "quantity": 20 },
     { "name": "Dairy Products", "quantity": 3 },
     { "name": "Hardwiring - Zainou 'Sharpshooter' ZMX11", "quantity": 1 },
-    { "name": "Women's 'Hover' Tights (red)", "quantity": 1 }
+    { "name": "Women's 'Hover' Tights (red)", "quantity": 1 },
+    { "name": "Metal Scraps", "quantity": 696969 },
+    { "name": "1MN Civilian Afterburner", "quantity": 24000 }
 ]
 
 const faek = [
