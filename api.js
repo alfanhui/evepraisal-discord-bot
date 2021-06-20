@@ -31,7 +31,7 @@ const api = (msg, input, market, percentage) => {
                     if (!(accepted_materials.indexOf(item.name.toLowerCase()) > -1)) {
                         unaccepted_materials.push(item.name)
                     }
-                    table.addRow(`${Number(item.quantity).toLocaleString()}x ${item.name}`, Number(item.prices.sell.min * (percentage / 100)).toLocaleString(), Number(item.prices.buy.max * (percentage / 100)).toLocaleString(), buy_total.toLocaleString())
+                    table.addRow(`${Number(item.quantity).toLocaleString()}x ${item.name}`, Number((item.prices.sell.min * (percentage / 100)).toFixed(0)).toLocaleString(), Number((item.prices.buy.max * (percentage / 100)).toFixed(0)).toLocaleString(), buy_total.toFixed(0).toLocaleString())
                 })
                 if (total == 0) { //invalid response
                     return null;
