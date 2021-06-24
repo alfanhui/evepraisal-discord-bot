@@ -45,7 +45,7 @@ const api = (msg, input, market, percentage) => {
                     .setAlign(1, AsciiTable.RIGHT)
                     .setAlign(2, AsciiTable.RIGHT)
                     .setAlign(3, AsciiTable.RIGHT)
-                evepriasal_header = `Description: ${market}_${percentage}pc_${utils.uuid()}\t${Number(total.toFixed(2)).toLocaleString()}`
+                evepriasal_header = `I will recieve: ${Number(total.toFixed(2)).toLocaleString()}\nDescription: ${market}_${percentage}pc_${utils.uuid()}\t${Number(total.toFixed(2)).toLocaleString()}`
                 evepriasal_footer = `\n**Rejected** buyback program does not accept: ${JSON.stringify(unaccepted_materials)}`
 
                 reply = split_message_content(table)
