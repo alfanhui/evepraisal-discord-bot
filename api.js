@@ -99,7 +99,6 @@ const split_message_content = (table) => {
         division_count = Math.ceil(table.toString().length / DISCORD_MAX_MESSAGE_LENGTH)
         split_rows = table.__rows.length / division_count
         temp = table.toString().split('\n')
-        reply = [];
         while (temp.length > 0) {
             reply.push(temp.splice(0, split_rows));
         }
