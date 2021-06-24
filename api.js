@@ -10,7 +10,9 @@ const accepted_materials = [].concat(
     materials.ore,
     materials.compressed_ore,
     materials.salavage,
-    materials.pi_fuel)
+    materials.pi_fuel,
+    materials.moon_ore,
+    materials.gas_clouds)
 
 const api = (msg, input, market, percentage) => {
     const xhr = new XMLHttpRequest();
