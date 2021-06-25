@@ -295,6 +295,29 @@ const moon_ore = [
     "zircon"
 ]
 
+const moon_materials = [
+    "Atmospheric Gases",
+    "Cadmium",
+    "Caesium",
+    "Chromium",
+    "Cobalt",
+    "Dysprosium",
+    "Evaporite Deposits",
+    "Hafnium",
+    "Hydrocarbons",
+    "Mercury",
+    "Neodymium",
+    "Platinum",
+    "Promethium",
+    "Scandium",
+    "Silicates",
+    "Technetium",
+    "Thulium",
+    "Titanium",
+    "Tungsten",
+    "Vanadium"
+]
+
 const gas_clouds = [
     "amber cytoserocin",
     "amber mykoserocin",
@@ -330,5 +353,6 @@ module.exports = {
     pi_fuel: pi_fuel,
     pi_commodies_without_fuel: pi_commodies_without_fuel,
     moon_ore: moon_ore,
+    moon_materials: moon_materials,
     gas_clouds: gas_clouds
 }

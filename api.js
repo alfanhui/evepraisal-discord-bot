@@ -12,6 +12,7 @@ const accepted_materials = [].concat(
     materials.salavage,
     materials.pi_fuel,
     materials.moon_ore,
+    materials.moon_materials,
     materials.gas_clouds)
 
 const api = (msg, input, market, percentage) => {
