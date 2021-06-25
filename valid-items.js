@@ -296,26 +296,26 @@ const moon_ore = [
 ]
 
 const moon_materials = [
-    "Atmospheric Gases",
-    "Cadmium",
-    "Caesium",
-    "Chromium",
-    "Cobalt",
-    "Dysprosium",
-    "Evaporite Deposits",
-    "Hafnium",
-    "Hydrocarbons",
-    "Mercury",
-    "Neodymium",
-    "Platinum",
-    "Promethium",
-    "Scandium",
-    "Silicates",
-    "Technetium",
-    "Thulium",
-    "Titanium",
-    "Tungsten",
-    "Vanadium"
+    "atmospheric gases",
+    "cadmium",
+    "caesium",
+    "chromium",
+    "cobalt",
+    "dysprosium",
+    "evaporite deposits",
+    "hafnium",
+    "hydrocarbons",
+    "mercury",
+    "neodymium",
+    "platinum",
+    "promethium",
+    "scandium",
+    "silicates",
+    "technetium",
+    "thulium",
+    "titanium",
+    "tungsten",
+    "vanadium"
 ]
 
 const gas_clouds = [
