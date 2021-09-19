@@ -5,13 +5,14 @@
     "main": "index.js",
     "scripts": {
         "start-dev": "nodemon --inspect index.js",
-        "start": "nodemon index.js",
+        "start": "cross-env NODE_OPTIONS=--max_old_space_size=256 nodemon index.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "",
     "license": "ISC",
     "dependencies": {
         "ascii-table": "0.0.9",
+        "cross-env": "^7.0.3",
         "discord": "^0.8.2",
         "discord.js": "^12.5.3",
         "fuzzyset.js": "^1.0.6",
