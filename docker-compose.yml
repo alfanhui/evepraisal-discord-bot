@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  evepraisal:
+    image: evepraisal:latest
+    restart: always
+    volumes:
+      - ./data:/opt/app/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 300M
+        reservations:
+          cpus: '0.25'
+          memory: 64M
