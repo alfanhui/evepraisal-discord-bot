@@ -36,7 +36,8 @@ Eve corp discord evepraisal bot
 2. `npm install`
 3. `cp evepraisal-bot.service /etc/systemd/system/evepraisal-bot.service`
 4. `systemctl enable evepraisal-bot.service`
-5. `systemctl start evepraisal-bot-service`
+5. `systemctl enable evepraisal-bot.service`
+6. `systemctl start evepraisal-bot.service`
 
 ## Support
 
