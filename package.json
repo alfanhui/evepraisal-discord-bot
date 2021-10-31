@@ -6,7 +6,7 @@
     "type": "module",
     "scripts": {
         "start-dev": "nodemon -r dotenv/config --inspect ./src/index.js",
-        "start": "nodemon -r dotenv/config ./src/index.js",
+        "start": "node -r dotenv/config ./src/index.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "",
