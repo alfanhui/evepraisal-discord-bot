@@ -4,11 +4,23 @@ Eve corp discord evepraisal bot
 
 ## Prerequisites
 
-Please create secret.js on root directory, exporting the token string for Discord authentication:
+Please create .env file on root directory, exporting the token string for Discord authentication:
 
-```js
-// ./secret.js
-export const token = '<your_token>';
+```bash
+## ./.env
+# NPM
+NODE_OPTIONS=--max_old_space_size=256
+
+# Evepraisal API
+EVEPRAISAL_API_URL = 'https://evepraisal.com/appraisal/structured.json'
+EVEPRAISAL_API_USER_AGENT = 'evepraisalDiscordBot'
+
+# Discord
+DISCORD_BOT_AUTHOR_ID=<your_bot_id>
+DISCORD_BOT_TOKEN=<your_token>
+
+# Eve
+AVAILABLE_MARKETS=jita,perimeter,universe,amarr,dodixie,hek,rens
 ```
 
 ## Docker Setup

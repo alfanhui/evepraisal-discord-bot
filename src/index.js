@@ -4,7 +4,6 @@ import { api } from './api.js';
 import { reply } from './reply.js';
 import { readCsv, read, readJson, write } from './utils/fs.js';
 import { isNumeric } from './utils/utils.js';
-import { token } from '../secret.js';
 let corp_members = readJson('./data/corp/members.json');
 
 var client = new Client({
@@ -172,4 +171,4 @@ client.on('messageCreate', async msg => {
     }
 });
 
-client.login(token);
+client.login(process.env.DISCORD_BOT_TOKEN);
