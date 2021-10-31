@@ -6,38 +6,38 @@ Eve corp discord evepraisal bot
 
 Please create secret.js on root directory, exporting the token string for Discord authentication:
 
-    ```js
-    // ./secret.js
-    export const token = '<your_token>';
-    ```
+```js
+// ./secret.js
+export const token = '<your_token>';
+```
 
 ## Docker Setup
 
 1. Build evepraisal image
 
-        ```bash
-        docker build -t evepraisal:latest .
-        ```
+    ```bash
+    docker build -t evepraisal:latest .
+    ```
 
 2. Run docker-compose
 
-        ```bash
-        docker compose up -d
-        ````
+    ```bash
+    docker compose up -d
+    ````
 
 ### Teardown
 
 1. Stop docker compose containers
 
-        ```bash
-        docker compose down
-        ```
+    ```bash
+    docker compose down
+    ```
 
 2. Remove docker compose containers
 
-        ```bash
-        docker compose rm
-        ```
+    ```bash
+    docker compose rm
+    ```
 
 ## Non-docker setup
 
