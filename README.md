@@ -2,7 +2,7 @@
 
 Eve corp discord evepraisal bot
 
-## Prerequists
+## Prerequisites
 
 Please create secret.js on root directory, exporting the token string for Discord authentication:
 
