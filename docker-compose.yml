@@ -3,8 +3,6 @@ services:
   evepraisal:
     image: evepraisal:latest
     restart: always
-    volumes:
-      - ./data:/opt/app/data
     deploy:
       resources:
         limits:

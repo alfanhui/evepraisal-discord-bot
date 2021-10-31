@@ -1,6 +1,8 @@
 node_modules
+package-lock.json
+
 .vscode
-evexerxes-bot.service
-nginx.conf
 .gitignore
-test
+
+evepraisal-bot.service
+docker-compose.yaml
