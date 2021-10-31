@@ -1,13 +1,12 @@
 [Service]
-WorkingDirectory=/opt/evepraisal-discord-bot
-ExecStart=/usr/local/bin/npm run start
+WorkingDirectory=/home/pi/evepraisal-discord-bot
+ExecStart=/usr/bin/npm run start
 Restart=always
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=evepraisal-discord-bot
 User=pi
 Group=pi
-Environment=NODE_ENV=production
 
 [Install]
 WantedBy=multi-user.target
