@@ -1,5 +1,5 @@
 # The base image needs to be ARM6 compatible
-FROM node:lts-alpine
+FROM node:slim
 WORKDIR /opt/app
 COPY package.json ./
 RUN npm install

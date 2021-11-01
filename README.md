@@ -12,8 +12,8 @@ Please create .env file on root directory, exporting the token string for Discor
 NODE_OPTIONS=--max_old_space_size=256
 
 # Evepraisal API
-EVEPRAISAL_API_URL = 'https://evepraisal.com/appraisal/structured.json'
-EVEPRAISAL_API_USER_AGENT = 'evepraisalDiscordBot'
+EVEPRAISAL_API_URL='https://evepraisal.com/appraisal/structured.json'
+EVEPRAISAL_API_USER_AGENT='evepraisalDiscordBot'
 
 # Discord
 DISCORD_BOT_AUTHOR_ID=<your_bot_id>
@@ -34,7 +34,7 @@ AVAILABLE_MARKETS=jita,perimeter,universe,amarr,dodixie,hek,rens
 2. Run docker-compose
 
     ```bash
-    docker compose up -d
+    docker-compose up -d
     ````
 
 ### Teardown
@@ -42,13 +42,13 @@ AVAILABLE_MARKETS=jita,perimeter,universe,amarr,dodixie,hek,rens
 1. Stop docker compose containers
 
     ```bash
-    docker compose down
+    docker-compose down
     ```
 
 2. Remove docker compose containers
 
     ```bash
-    docker compose rm
+    docker-compose rm
     ```
 
 ## Non-docker setup

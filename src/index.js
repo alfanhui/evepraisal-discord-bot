@@ -7,7 +7,8 @@ import { isNumeric } from './utils/utils.js';
 let corp_members = readJson('./data/corp/members.json');
 
 var client = new Client({
-    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES]
+    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+    restRequestTimeout: 300000
 });
 
 const AVAILABLE_MARKETS = process.env.AVAILABLE_MARKETS.split(",");
