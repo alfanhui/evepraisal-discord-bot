@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { Item } from '../index';
+import { Item } from '../../index';
 
 export const api = async(input: Item[], market:string): Promise<AxiosResponse<any,any>> => {
     // create a JSON object

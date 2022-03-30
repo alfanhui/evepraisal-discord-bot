@@ -1,12 +1,11 @@
 import { Client, Intents, Message } from 'discord.js';
 import FuzzySet from 'fuzzyset.js';
-import { api } from './src/api.js';
+import { api } from './src/apis/evepraisal-api.js';
 import { reply } from './src/reply.js';
+import { Cron } from './src/scheduler/cron.js';
 import { readCsv, read, readJson, writeString, writeStringArray } from './src/utils/fs.js';
 import { isNumeric } from './src/utils/utils.js';
 require('dotenv').config()
-
-let corp_members = readJson('./data/corp/members.json');
 
 var client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
@@ -20,6 +19,7 @@ const MARKET_FILENAME = './data/market.txt';
 const ITEMS = readCsv('./data/items.csv');
 var fuzzy = FuzzySet(ITEMS, false);
 let officers = readCsv('./data/corp/officers.csv')
+let corp_members = readJson('./data/corp/members.json');
 let accepted_channels = readCsv(ACCEPTED_CHANNELS_FILENAME)
 let market = read(MARKET_FILENAME)
 let percentage = Number(read(PERCENTAGE_FILENAME))
@@ -185,3 +185,6 @@ client.on('messageCreate', async msg => {
 });
 
 client.login(process.env.DISCORD_BOT_TOKEN);
+
+//Start scheduler
+const cron = new Cron();

@@ -1,4 +1,4 @@
-import { createWriteStream, writeFileSync, readFileSync } from "fs";
+import { writeFileSync, readFileSync } from "fs";
 
 export const writeString = (filePath:string, data: string) => {
     writeFileSync(`${filePath}`, `${data},\n`);
