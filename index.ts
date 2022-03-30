@@ -1,9 +1,11 @@
-import { Client, Intents } from 'discord.js';
+import { Client, Intents, Message } from 'discord.js';
 import FuzzySet from 'fuzzyset.js';
-import { api } from './api.js';
-import { reply } from './reply.js';
-import { readCsv, read, readJson, write } from './utils/fs.js';
-import { isNumeric } from './utils/utils.js';
+import { api } from './src/api.js';
+import { reply } from './src/reply.js';
+import { readCsv, read, readJson, writeString, writeStringArray } from './src/utils/fs.js';
+import { isNumeric } from './src/utils/utils.js';
+require('dotenv').config()
+
 let corp_members = readJson('./data/corp/members.json');
 
 var client = new Client({
@@ -13,38 +15,45 @@ var client = new Client({
 
 const AVAILABLE_MARKETS = process.env.AVAILABLE_MARKETS.split(",");
 const ACCEPTED_CHANNELS_FILENAME = './data/accepted_channels.csv';
+const PERCENTAGE_FILENAME = './data/percentage.txt';
+const MARKET_FILENAME = './data/market.txt';
 const ITEMS = readCsv('./data/items.csv');
 var fuzzy = FuzzySet(ITEMS, false);
 let officers = readCsv('./data/corp/officers.csv')
 let accepted_channels = readCsv(ACCEPTED_CHANNELS_FILENAME)
-let market = read('./data/market.txt')
-let percentage = read('./data/percentage.txt')
+let market = read(MARKET_FILENAME)
+let percentage = Number(read(PERCENTAGE_FILENAME))
+
+export interface Item {
+    name: String,
+    quantity: number
+}
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
     client.user.setPresence({
         status: "online", //You can show online, idle....
-        activity: {
+        activities: [{
             name: "Evepraisal", //The message shown
             type: "PLAYING" //PLAYING: WATCHING: LISTENING: STREAMING:
-        }
+        }]
     });
 });
 
-const isChannelSetupCommand = (msg) => {
+const isChannelSetupCommand = (msg: Message) => {
     //setup and help
     switch (msg.content) {
         case '!init-evepraisal':
             if (!(accepted_channels.indexOf(msg.channel.id) > -1)) {
                 accepted_channels.push(msg.channel.id)
-                write(ACCEPTED_CHANNELS_FILENAME, accepted_channels)
+                writeStringArray(ACCEPTED_CHANNELS_FILENAME, accepted_channels)
                 msg.reply(`Channel registered: ${msg.channel.id}`)
             }
             return true;
         case '!rm-evepraisal':
             if ((accepted_channels.indexOf(msg.channel.id) > -1)) {
                 accepted_channels = accepted_channels.filter(e => e !== msg.channel.id);
-                write(ACCEPTED_CHANNELS_FILENAME, accepted_channels)
+                writeStringArray(ACCEPTED_CHANNELS_FILENAME, accepted_channels)
                 msg.reply('Channel unregistered')
             }
             return true;
@@ -52,7 +61,7 @@ const isChannelSetupCommand = (msg) => {
     return false;
 }
 
-const isSurpriseMention = async(msg) => {
+const isSurpriseMention = async(msg: Message) => {
     if (msg.content[1] === "@") {
         //Substring 2 because of mysterious hidden char
         let username = msg.cleanContent.toLowerCase().trim().substring(2).replace(/[\s]/g, "");
@@ -66,7 +75,7 @@ const isSurpriseMention = async(msg) => {
     return false;
 }
 
-const isAdminReply = (msg) => {
+const isAdminReply = (msg: Message) => {
     try {
         if (msg.content[0] !== '!') {
             return false;
@@ -74,7 +83,7 @@ const isAdminReply = (msg) => {
         if (!(officers.indexOf(msg.author.id) > -1)) {
             throw `Permission denied: ${msg.author.id}`
         }
-        string = msg.content.split("!")[1].split(" ")[0]
+        let string: string = msg.content.split("!")[1].split(" ")[0]
         if (string && string != "") {
             if (string === "help") {
                 msg.reply(`\`\`\`bash
@@ -83,10 +92,10 @@ const isAdminReply = (msg) => {
     !market          (change market)     | example: !jita
     !number          (change percentage) | example: !90 
                 \`\`\``)
-            } else if (isNumeric(string)) {
+            } else if (isNumeric(Number(string))) {
                 if ((Number(string) > 0) && (Number(string) < 101)) {
-                    percentage = Number(string)
-                    write(PERCENTAGE_FILENAME, percentage.toString())
+                    let percentage: number = Number(string)
+                    writeString(PERCENTAGE_FILENAME, String(percentage))
                     msg.reply(`Hello PxKn Officer.\nPercentage now changed to: **${percentage}%**`);
                     msg.react('💸')
                 } else {
@@ -95,7 +104,7 @@ const isAdminReply = (msg) => {
             } else {
                 if (AVAILABLE_MARKETS.indexOf(string.toLowerCase()) > -1) {
                     market = string;
-                    write(MARKET_FILENAME, market.toString())
+                    writeString(MARKET_FILENAME, market.toString())
                     msg.reply(`Hello PxKn Officer.\nMarket now changed to: **${market}**`);
                     msg.react('📈')
                 } else {
@@ -137,7 +146,7 @@ client.on('messageCreate', async msg => {
             return null;
         }
         let contentArray = msg.content.split("\n");
-        let input = []
+        let input: Item[] = [];
         contentArray.map(line => {
             line = line.trim().replace(/[\s]{2,}/g, " ") //remove extra spaces
             let line_reg = line.trim().match(".+?(?=(\\s[1-9][,0-9]*))");
@@ -164,6 +173,9 @@ client.on('messageCreate', async msg => {
             }
             input.push({ "name": found_item[0][1], "quantity": quantity })
         })
+        if(input.length == 0){
+            return null;
+        }
         let response = await api(input, market)
         reply(msg, market, percentage, response)
     } catch (e) {

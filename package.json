@@ -1,16 +1,24 @@
 {
-    "name": "evepraisal-bot",
+    "name": "eveprasial-discord-bot",
     "version": "1.0.0",
-    "description": "",
-    "main": "./src/index.js",
-    "type": "module",
+    "description": "Eveprasial discord bot",
+    "main": "./dist/index.js",
     "scripts": {
-        "start-dev": "nodemon -r dotenv/config --inspect ./src/index.js",
-        "start": "node -r dotenv/config ./src/index.js",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "start": "SET NODE_ENV=development && set DEBUG=true && tsc --p tsconfig.json && nodemon ./dist/index.js",
+        "prod": "cross-env NODE_ENV=production npx tsc --p tsconfig.json && node ./dist/index.js",
+        "pi-start": "concurrently \"NODE_ENV=development tsc -w --p tsconfig.json\"  \"NODE_ENV=development nodemon ./dist/index.js\"",
+        "test": "jest --detectOpenHandles"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/alfanhui/eveprasial-discord-bot.git"
     },
     "author": "",
     "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/alfanhui/eveprasial-discord-bot/issues"
+    },
+    "homepage": "https://github.com/alfanhui/eveprasial-discord-bot#readme",
     "dependencies": {
         "ascii-table": "0.0.9",
         "axios": "^0.24.0",
@@ -19,6 +27,11 @@
         "fuzzyset.js": "^1.0.6"
     },
     "devDependencies": {
-        "nodemon": "^2.0.14"
+        "@types/fuzzyset.js": "^0.0.2",
+        "concurrently": "^6.2.0",
+        "cross-env": "^7.0.3",
+        "nodemon": "^2.0.14",
+        "ts-node": "^10.0.0",
+        "typescript": "^4.3.2"
     }
 }

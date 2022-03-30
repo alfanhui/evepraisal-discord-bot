@@ -55,9 +55,9 @@ AVAILABLE_MARKETS=jita,perimeter,universe,amarr,dodixie,hek,rens
 
 1. `git clone git@github.com:alfanhui/evepraisal-discord-bot.git /opt`
 2. `npm install`
-3. `cp evepraisal-bot.service /etc/systemd/system/evepraisal-bot.service`
-4. `systemctl enable evepraisal-bot.service`
-5. `systemctl start evepraisal-bot.service`
+3. `sudo cp evepraisal-bot.service /etc/systemd/system/evepraisal-bot.service`
+4. `sudo systemctl enable evepraisal-bot.service`
+5. `sudo systemctl start evepraisal-bot.service`
 
 ## Support
 
