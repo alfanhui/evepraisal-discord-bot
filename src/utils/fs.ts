@@ -1,4 +1,4 @@
-import { writeFileSync, readFileSync } from "fs";
+import { writeFileSync, readFileSync, existsSync } from "fs";
 
 export const writeString = (filePath:string, data: string) => {
     writeFileSync(`${filePath}`, `${data},\n`);
@@ -18,4 +18,8 @@ export const readJson = (filePath: string) => {
 
 export const readCsv = (filePath: string) => {
     return read(filePath).split(",\n");
+}
+
+export const exists = (filePath: string): boolean => {
+    return existsSync(filePath);
 }

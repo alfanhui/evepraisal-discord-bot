@@ -77,51 +77,58 @@ Otherwise, the is now an scheduler that will update the lists every monday.
 
 || Group ID || Group ||
 | ---- | -------------|
-| 1996 | Abyssal Materials|
-| 966| Ancient Salvage |
-| 712| Biochemical Material |
-| 429| Composite |
-| 20 | Drug |
-| 1136 | Fuel Block |
-| 422 | Gas Isotopes |
-| 974 | Hybrid Polymers |
-| 423 | Ice Product |
-| 428 | Intermediate Materials |
-| 18 | Mineral |
 | 17 | Money |
-| 427 | Moon Materials |
-| 1676 | Named Components |
-| 886 | Rogue Drone Components |
-| 754 | Salvaged Materials |
-| 967 | Wormhole Minerals |
-| 903 | Ancient Compressed Ice |
-| 450 | Arkonor |
-| 4031 | Bezdnacine |
-| 451 | Bistot |
-| 1920 | Common Moon Asteroids |
+| 18 | Mineral |
+| 20 | Drug |
 | 452 | Crokite |
 | 453 | Dark Ochre |
-| 2006 | Deadspace Asteroids |
-| 1911 | Empire Asteroids |
-| 1923 | Exceptional Moon Asteroids |
-| 2024 | Fluorite |
-| 467 | Gneiss |
+| 422 | Gas Isotopes |
+| 423 | Ice Product |
+| 427 | Moon Materials |
+| 428 | Intermediate Materials |
+| 429 | Composite |
+| 450 | Arkonor |
+| 451 | Bistot |
 | 454 | Hedbergite |
 | 455 | Hemorphite |
 | 465 | Ice |
 | 456 | Jaspet |
 | 457 | Kernite |
-| 468 | Mercoxit |
-| 469 | Omber |
 | 458 | Plagioclase |
 | 459 | Pyroxeres |
-| 4030 | Rakovene |
-| 1922 | Rare Moon Asteroids |
 | 460 | Scordite |
 | 461 | Spodumain |
-| 4029 | Talassonite |
-| 2022 | Temporal Resources |
-| 519 | Terran Artifacts |
-| 1884 | Ubiquitous Moon Asteroids |
-| 1921 | Uncommon Moon Asteroids |
 | 462 | Veldspar |
+| 468 | Mercoxit |
+| 467 | Gneiss |
+| 469 | Omber |
+| 519 | Terran Artifacts |
+| 712 | Biochemical Material |
+| 754 | Salvaged Materials |
+| 886 | Rogue Drone Components |
+| 903 | Ancient Compressed Ice |
+| 966 | Ancient Salvage |
+| 967 | Wormhole Minerals |
+| 974 | Hybrid Polymers |
+| 1032 | Planet Solid - Raw Resource |
+| 1033 | Planet Liquid-Gas - Raw Resource |
+| 1034 | Refined Commodities - Tier 2 |
+| 1035 | Planet Organic - Raw Resource |
+| 1041 | Advanced Commodities - Tier 4 |
+| 1042 | Basic Commodities - Tier 1 |
+| 1040 | Specialized Commodities - Tier 3 |
+| 1136 | Fuel Block |
+| 1676 | Named Components |
+| 1884 | Ubiquitous Moon Asteroids |
+| 1911 | Empire Asteroids |
+| 1920 | Common Moon Asteroids |
+| 1922 | Rare Moon Asteroids |
+| 1921 | Uncommon Moon Asteroids |
+| 1923 | Exceptional Moon Asteroids |
+| 1996 | Abyssal Materials|
+| 2006 | Deadspace Asteroids |
+| 2022 | Temporal Resources |
+| 2024 | Fluorite |
+| 4030 | Rakovene |
+| 4029 | Talassonite |
+| 4031 | Bezdnacine |

@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { Group, Type } from '../models/eve';
+import { Category, Group, Type } from '../models/eve';
 
 async function apiGet (queryString: string): Promise<AxiosResponse<any,any>> {
     try {
@@ -27,4 +27,12 @@ export async function getType (typeId: number): Promise<AxiosResponse<Type,any>>
 
 export async function getGroup (groupId: number): Promise<AxiosResponse<Group,any>> {
     return apiGet(`latest/universe/groups/${groupId}/?datasource=tranquility&language=en`);
+}
+
+export async function getCategory(categoryId: number): Promise<AxiosResponse<Category, any>> {
+    return apiGet(`latest/universe/categories/${categoryId}/?datasource=tranquility&language=en`);
+}
+
+export async function getCategories(): Promise<AxiosResponse<number[], any>> {
+    return apiGet(`latest/universe/categories/?datasource=tranquility&language=en`);
 }

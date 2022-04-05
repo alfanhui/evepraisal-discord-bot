@@ -24,3 +24,10 @@ export interface Group {
     "published": boolean,
     "types": number[]
 }
+
+export interface Category {
+    "category_id": number,
+    "groups": number[],
+    "name":	string,
+    "published": boolean
+}

@@ -1,45 +1,54 @@
 import AsciiTable from 'ascii-table';
-import { uuid, flattenJSONtoArray } from './utils/utils.js';
-import { readJson } from './utils/fs.js';
+import { uuid } from './utils/utils.js';
 import { Message } from 'discord.js';
 import { AxiosResponse } from 'axios';
-import { Appraisal } from './models/evepraisal.js';
+import { Appraisal, AppraisalItem } from './models/evepraisal.js';
+import { SecondaryBuybackItems } from './namespaces/secondaryBuybackItems.js';
+import { BuybackItems } from './namespaces/buybackItems.js';
 const { RIGHT } = AsciiTable;
 
 const DISCORD_MAX_MESSAGE_LENGTH = 1800;
-const ACCEPTED_MATERIALS = flattenJSONtoArray(readJson('./data/corp/buyback.json'));
 
-export const reply = (msg: Message, market: string, percentage: number, response: AxiosResponse<{"appraisal": Appraisal}, any>) => {
+export const reply = (msg: Message, market: string, percentages: number[], response: AxiosResponse<{ "appraisal": Appraisal }, any>) => {
     if (response == null)
         return;
     let table = new AsciiTable()
     table.setHeading("ITEM", "1x SELL", "1x BUY", "TOTAL")
     let total = 0
-    let unaccepted_materials: string[] = []
+    let unaccepted_materials: string[] = [];
+    let secondary_materials: string[] = [];
     response.data.appraisal.items.map(item => {
-        let buy_total = Number(((item.prices.buy.max * (percentage / 100) * item.quantity)).toFixed(2))
+        let local_percentage: number;
+        if (SecondaryBuybackItems.getFuzzyItems().get(item.name, null, .99)) {
+            local_percentage = percentages[1];
+            secondary_materials.push(item.name);
+        } else {
+            local_percentage = percentages[0];
+        }
+
+        let buy_total = Number(((item.prices.buy.max * (local_percentage / 100) * item.quantity)).toFixed(2))
         total += buy_total
-        if (!(ACCEPTED_MATERIALS.indexOf(item.name.toLowerCase()) > -1)) {
+        if (!BuybackItems.getFuzzyItems().get(item.name.toLowerCase(), null, 0.99)) {
             unaccepted_materials.push(item.name)
         }
-        table.addRow(`${Number(item.quantity).toLocaleString()} x ${item.name}`, Number((item.prices.sell.min * (percentage / 100)).toFixed(0)).toLocaleString(), Number((item.prices.buy.max * (percentage / 100)).toFixed(0)).toLocaleString(), buy_total.toLocaleString())
+        table.addRow(`${Number(item.quantity).toLocaleString()} x ${item.name}`, Number((item.prices.sell.min * (local_percentage / 100)).toFixed(0)).toLocaleString(), Number((item.prices.buy.max * (local_percentage / 100)).toFixed(0)).toLocaleString(), Number(buy_total.toFixed(0)).toLocaleString())
     })
     if (total == 0) { //invalid response
         return;
     }
 
-    table.addRow("BUYBACK", "--", "->", Number(total.toFixed(2)).toLocaleString())
+    table.addRow("BUYBACK", "--", "->", Number(total.toFixed(0)).toLocaleString())
     table
         .removeBorder()
         .setAlign(1, RIGHT)
         .setAlign(2, RIGHT)
         .setAlign(3, RIGHT)
-    let evepriasal_header = `I will receive: ${Number(total.toFixed(2)).toLocaleString()}\nDescription: ${market}_${percentage}pc_${uuid()}\t${Number(total.toFixed(2)).toLocaleString()}`
-    let evepriasal_footer = `\n ** Rejected ** buyback program does not accept: ${JSON.stringify(unaccepted_materials)}`
+    let evepriasal_header: string = get_header(response.data.appraisal.items, secondary_materials, total, market, percentages);
+    let evepriasal_footer: string = get_footer(percentages, secondary_materials, unaccepted_materials);
 
     let reply: string[][] = split_message_content(table)
 
-    if (unaccepted_materials.length > 0) {
+    if (evepriasal_footer.length > 0) {
         reply[reply.length - 1].push(evepriasal_footer)
     }
 
@@ -49,7 +58,7 @@ export const reply = (msg: Message, market: string, percentage: number, response
         const singleMessage = reply.join("\n")
         msg.reply(`\`\`\`css\n${evepriasal_header}\n${singleMessage}\`\`\``)
     } else {
-        reply.forEach((message: string[], index)=>{
+        reply.forEach((message: string[], index) => {
             let partMessage = message.join("\n");
             if (index == 0) {
                 msg.reply(`\`\`\`css\n${evepriasal_header}\n${partMessage}\`\`\``)
@@ -58,6 +67,21 @@ export const reply = (msg: Message, market: string, percentage: number, response
             }
         })
     }
+}
+
+const get_header = (items: AppraisalItem[], secondary_materials: string[], total: number, market: string, percentages: number[]): string => {
+    let percentage_string: string;
+    if (items.length == secondary_materials.length) percentage_string = `${percentages[1]}`;
+    else if (secondary_materials.length > 0) percentage_string = 'mixed_';
+    else percentage_string = `${percentages[0]}`;
+    return `${Number(total.toFixed(0)).toLocaleString()} ISK Total\nDescription: ${market}_${percentage_string}pc_${uuid()}`;
+}
+
+const get_footer = (percentages: number[], secondary_materials: string[], unaccepted_materials: string[]): string => {
+    let footer: string = "";
+    if (secondary_materials.length > 0) footer += `\n** ${percentages[1]}% buyback items ** accepted at discount: ${JSON.stringify(secondary_materials)}`;
+    if (unaccepted_materials.length > 0) footer += `\n ** Rejected ** buyback program does not accept: ${JSON.stringify(unaccepted_materials)}`;
+    return footer;
 }
 
 const split_message_content = (table: any) => {
