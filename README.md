@@ -6,10 +6,13 @@ Eve corp discord evepraisal bot
 
 Please create .env file on root directory, exporting the token string for Discord authentication:
 
-```bash
+```ini
 ## ./.env
 # NPM
 NODE_OPTIONS=--max_old_space_size=256
+
+# Eve API
+EVE_API_URL = 'https://esi.evetech.net/'
 
 # Evepraisal API
 EVEPRAISAL_API_URL='https://evepraisal.com/appraisal/structured.json'
@@ -21,6 +24,17 @@ DISCORD_BOT_TOKEN=<your_token>
 
 # Eve
 AVAILABLE_MARKETS=jita,perimeter,universe,amarr,dodixie,hek,rens
+
+# Cron - Comment out to run once on startup (except on all_items)
+#BUYBACK_ITEMS_UPDATE_CRON=0 0 2 * * MON
+#SECONDARY_BUYBACK_ITEMS_UPDATE_CRON=0 10 2 * * MON
+#ALL_ITEMS_UPDATE_CRON=0 0 3 * * MON
+
+# Items
+GROUPS=18,754,422,4,427,423,428,450,4031,451,1920,452,453,2006,1911,1923,2024,467,454,455,465,456,457,468,469,458,459,4030,1922,460,461,4029,2022,519,1884,1921,462,1033,1035,1032,1042,1034,1040
+TYPE=
+SECONDARY_GROUPS=465
+SECONDARY_TYPES=
 ```
 
 ## Docker Setup
