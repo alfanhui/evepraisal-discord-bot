@@ -2,14 +2,15 @@ import AsciiTable from 'ascii-table';
 import { uuid } from './utils/utils.js';
 import { Message } from 'discord.js';
 import { AxiosResponse } from 'axios';
-import { Appraisal, AppraisalItem } from './models/evepraisal.js';
+// import { Appraisal, AppraisalItem } from './models/evepraisal.js';
+import { Appraisal, AppraisalItem } from './models/janice.js';
 import { SecondaryBuybackItems } from './namespaces/secondaryBuybackItems.js';
 import { BuybackItems } from './namespaces/buybackItems.js';
 const { RIGHT } = AsciiTable;
 
 const DISCORD_MAX_MESSAGE_LENGTH = 1800;
 
-export const reply = (msg: Message, market: string, percentages: number[], response: AxiosResponse<{ "appraisal": Appraisal }, any>) => {
+export const reply = (msg: Message, market: number, percentages: number[], response: AxiosResponse<{ result: Appraisal}, any>) => {
     if (response == null)
         return;
     let table = new AsciiTable()
@@ -17,21 +18,21 @@ export const reply = (msg: Message, market: string, percentages: number[], respo
     let total = 0
     let unaccepted_materials: string[] = [];
     let secondary_materials: string[] = [];
-    response.data.appraisal.items.map(item => {
+    response.data.result.items.map(item => {
         let local_percentage: number;
-        if (SecondaryBuybackItems.getFuzzyItems().get(item.name, null, .99)) {
+        if (SecondaryBuybackItems.getFuzzyItems().get(item.itemType.name, null, .99)) {
             local_percentage = percentages[1];
-            secondary_materials.push(item.name);
+            secondary_materials.push(item.itemType.name);
         } else {
             local_percentage = percentages[0];
         }
 
-        let buy_total = Number(((item.prices.buy.max * (local_percentage / 100) * item.quantity)).toFixed(2))
+        let buy_total = Number(((item.effectivePrices.buyPrice * (local_percentage / 100) * item.amount)).toFixed(2))
         total += buy_total
-        if (!BuybackItems.getFuzzyItems().get(item.name.toLowerCase(), null, 0.99)) {
-            unaccepted_materials.push(item.name)
+        if (!BuybackItems.getFuzzyItems().get(item.itemType.name.toLowerCase(), null, 0.99)) {
+            unaccepted_materials.push(item.itemType.name)
         }
-        table.addRow(`${Number(item.quantity).toLocaleString()} x ${item.name}`, Number((item.prices.sell.min * (local_percentage / 100)).toFixed(0)).toLocaleString(), Number((item.prices.buy.max * (local_percentage / 100)).toFixed(0)).toLocaleString(), Number(buy_total.toFixed(0)).toLocaleString())
+        table.addRow(`${Number(item.amount).toLocaleString()} x ${item.itemType.name}`, Number((item.effectivePrices.sellPrice * (local_percentage / 100)).toFixed(0)).toLocaleString(), Number((item.effectivePrices.buyPrice * (local_percentage / 100)).toFixed(0)).toLocaleString(), Number(buy_total.toFixed(0)).toLocaleString())
     })
     if (total == 0) { //invalid response
         return;
@@ -43,7 +44,7 @@ export const reply = (msg: Message, market: string, percentages: number[], respo
         .setAlign(1, RIGHT)
         .setAlign(2, RIGHT)
         .setAlign(3, RIGHT)
-    let evepriasal_header: string = get_header(response.data.appraisal.items, secondary_materials, total, market, percentages);
+    let evepriasal_header: string = get_header(response.data.result.items, secondary_materials, total, market, percentages);
     let evepriasal_footer: string = get_footer(percentages, secondary_materials, unaccepted_materials);
 
     let reply: string[][] = split_message_content(table)
@@ -69,7 +70,7 @@ export const reply = (msg: Message, market: string, percentages: number[], respo
     }
 }
 
-const get_header = (items: AppraisalItem[], secondary_materials: string[], total: number, market: string, percentages: number[]): string => {
+const get_header = (items: AppraisalItem[], secondary_materials: string[], total: number, market: number, percentages: number[]): string => {
     let percentage_string: string;
     if (items.length == secondary_materials.length) percentage_string = `${percentages[1]}`;
     else if (secondary_materials.length > 0) percentage_string = 'mixed_';

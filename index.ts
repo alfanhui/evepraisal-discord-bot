@@ -1,5 +1,6 @@
 import { Client, Intents, Message } from 'discord.js';
-import { api } from './src/apis/evepraisal-api.js';
+//import { api } from './src/apis/evepraisal-api.js';
+import { api } from './src/apis/evejaniace-api.js';
 import { reply } from './src/reply.js';
 import { Cron } from './src/scheduler/cron.js';
 import { readCsv, read, readJson, writeString, writeStringArray } from './src/utils/fs.js';
@@ -23,7 +24,7 @@ const MARKET_FILENAME = './data/market.txt';
 let officers = readCsv('./data/corp/officers.csv')
 let corp_members = readJson('./data/corp/members.json');
 let accepted_channels = readCsv(ACCEPTED_CHANNELS_FILENAME)
-let market = read(MARKET_FILENAME)
+let market = Number(read(MARKET_FILENAME));
 let percentages: number[] = readCsv(PERCENTAGE_FILENAME).map(v=>Number(v));
 
 export interface Item {
@@ -92,7 +93,7 @@ const isAdminReply = (msg: Message, percentages: number[]) => {
             msg.reply(`\`\`\`bash
 !init-evepraisal (register channel)
 !rm-evepraisal   (unregister channel)
-!market          (change market)                | example: !jita
+!market          (change market)                | example: !2
 !p number        (change primary percentage)    | example: !p 90
 !s number        (change secondary percentage)  | example: !s 75
             \`\`\``)
@@ -110,7 +111,7 @@ const isAdminReply = (msg: Message, percentages: number[]) => {
             msg.react('💸')
         } else {
             if (AVAILABLE_MARKETS.indexOf(value.toLowerCase()) > -1) {
-                market = value;
+                market = Number(value);
                 writeString(MARKET_FILENAME, market.toString())
                 msg.reply(`Hello PxKn Officer.\nMarket now changed to: **${market}**`);
                 msg.react('📈')
@@ -153,7 +154,7 @@ client.on('messageCreate', async msg => {
         }
 
         let contentArray = msg.content.split("\n");
-        let input: Item[] = [];
+        let input: string[] = [];
         contentArray.map(line => {
             line = line.trim().replace(/[\s]{2,}/g, " ") //remove extra spaces
             let line_reg = line.trim().match(".+?(?=(\\s[1-9][,0-9]*))");
@@ -181,7 +182,7 @@ client.on('messageCreate', async msg => {
                     return null;
                 }
             }
-            input.push({ "name": found_item[0][1], "quantity": quantity })
+            input.push(`${quantity} ${found_item[0][1]}`)
         })
         if(input.length == 0){
             return null;
