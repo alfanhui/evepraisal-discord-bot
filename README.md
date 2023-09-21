@@ -1,6 +1,9 @@
 # evepraisal-discord-bot
 
-Eve corp discord evepraisal bot
+Eve corp discord evepraisal bot. **Now using Janice!**
+
+![Screenshot of the input and output from Discord Bot](./images/Screenshot.PNG)
+
 
 ## Prerequisites
 
@@ -15,7 +18,7 @@ NODE_OPTIONS=--max_old_space_size=256
 EVE_API_URL = 'https://esi.evetech.net/'
 
 # Evepraisal API
-EVEPRAISAL_API_URL='https://evepraisal.com/appraisal/structured.json'
+EVEPRAISAL_API_URL = 'https://janice.e-351.com/api/rpc/v1?m=Appraisal.create'
 EVEPRAISAL_API_USER_AGENT='evepraisalDiscordBot'
 
 # Discord
@@ -23,7 +26,7 @@ DISCORD_BOT_AUTHOR_ID=<your_bot_id>
 DISCORD_BOT_TOKEN=<your_token>
 
 # Eve
-AVAILABLE_MARKETS=jita,perimeter,universe,amarr,dodixie,hek,rens
+AVAILABLE_MARKETS=2
 
 # Cron - Comment out to run once on startup (except on all_items)
 #BUYBACK_ITEMS_UPDATE_CRON=0 0 2 * * MON
