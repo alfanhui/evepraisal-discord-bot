@@ -1,6 +1,6 @@
 [Service]
 WorkingDirectory=/home/pi/evepraisal-discord-bot
-ExecStart=/usr/bin/npm run start
+ExecStart=/usr/bin/npm run prod
 Restart=always
 StandardOutput=syslog
 StandardError=syslog

@@ -1,10 +1,16 @@
-import { Client, Intents } from 'discord.js';
-import FuzzySet from 'fuzzyset.js';
-import { api } from './api.js';
-import { reply } from './reply.js';
-import { readCsv, read, readJson, write } from './utils/fs.js';
-import { isNumeric } from './utils/utils.js';
-let corp_members = readJson('./data/corp/members.json');
+import { Client, Intents, Message } from 'discord.js';
+//import { api } from './src/apis/evepraisal-api.js';
+import { api } from './src/apis/evejaniace-api.js';
+import { reply } from './src/reply.js';
+import { Cron } from './src/scheduler/cron.js';
+import { readCsv, read, readJson, writeString, writeStringArray } from './src/utils/fs.js';
+import { isNumeric } from './src/utils/utils.js';
+import { BuybackItems } from './src/namespaces/buybackItems';
+import { AllItems } from './src/namespaces/allItems.js';
+require('dotenv').config()
+
+//Start scheduler
+const cron = new Cron();
 
 var client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
@@ -13,38 +19,44 @@ var client = new Client({
 
 const AVAILABLE_MARKETS = process.env.AVAILABLE_MARKETS.split(",");
 const ACCEPTED_CHANNELS_FILENAME = './data/accepted_channels.csv';
-const ITEMS = readCsv('./data/items.csv');
-var fuzzy = FuzzySet(ITEMS, false);
+const PERCENTAGE_FILENAME = './data/percentages.csv';
+const MARKET_FILENAME = './data/market.txt';
 let officers = readCsv('./data/corp/officers.csv')
+let corp_members = readJson('./data/corp/members.json');
 let accepted_channels = readCsv(ACCEPTED_CHANNELS_FILENAME)
-let market = read('./data/market.txt')
-let percentage = read('./data/percentage.txt')
+let market = Number(read(MARKET_FILENAME));
+let percentages: number[] = readCsv(PERCENTAGE_FILENAME).map(v=>Number(v));
+
+export interface Item {
+    name: String,
+    quantity: number
+}
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
     client.user.setPresence({
         status: "online", //You can show online, idle....
-        activity: {
+        activities: [{
             name: "Evepraisal", //The message shown
             type: "PLAYING" //PLAYING: WATCHING: LISTENING: STREAMING:
-        }
+        }]
     });
 });
 
-const isChannelSetupCommand = (msg) => {
+const isChannelSetupCommand = (msg: Message) => {
     //setup and help
     switch (msg.content) {
         case '!init-evepraisal':
             if (!(accepted_channels.indexOf(msg.channel.id) > -1)) {
                 accepted_channels.push(msg.channel.id)
-                write(ACCEPTED_CHANNELS_FILENAME, accepted_channels)
+                writeStringArray(ACCEPTED_CHANNELS_FILENAME, accepted_channels)
                 msg.reply(`Channel registered: ${msg.channel.id}`)
             }
             return true;
         case '!rm-evepraisal':
             if ((accepted_channels.indexOf(msg.channel.id) > -1)) {
                 accepted_channels = accepted_channels.filter(e => e !== msg.channel.id);
-                write(ACCEPTED_CHANNELS_FILENAME, accepted_channels)
+                writeStringArray(ACCEPTED_CHANNELS_FILENAME, accepted_channels)
                 msg.reply('Channel unregistered')
             }
             return true;
@@ -52,21 +64,21 @@ const isChannelSetupCommand = (msg) => {
     return false;
 }
 
-const isSurpriseMention = async(msg) => {
+const isSurpriseMention = async(msg: Message) => {
     if (msg.content[1] === "@") {
         //Substring 2 because of mysterious hidden char
         let username = msg.cleanContent.toLowerCase().trim().substring(2).replace(/[\s]/g, "");
         let input = corp_members[username];
         if (input) {
             let response = await api(input, market)
-            reply(msg, market, percentage, response)
+            reply(msg, market, percentages, response)
         }
         return true;
     }
     return false;
 }
 
-const isAdminReply = (msg) => {
+const isAdminReply = (msg: Message, percentages: number[]) => {
     try {
         if (msg.content[0] !== '!') {
             return false;
@@ -74,33 +86,37 @@ const isAdminReply = (msg) => {
         if (!(officers.indexOf(msg.author.id) > -1)) {
             throw `Permission denied: ${msg.author.id}`
         }
-        string = msg.content.split("!")[1].split(" ")[0]
-        if (string && string != "") {
-            if (string === "help") {
-                msg.reply(`\`\`\`bash
-    !init-evepraisal (register channel)
-    !rm-evepraisal   (unregister channel)
-    !market          (change market)     | example: !jita
-    !number          (change percentage) | example: !90 
-                \`\`\``)
-            } else if (isNumeric(string)) {
-                if ((Number(string) > 0) && (Number(string) < 101)) {
-                    percentage = Number(string)
-                    write(PERCENTAGE_FILENAME, percentage.toString())
-                    msg.reply(`Hello PxKn Officer.\nPercentage now changed to: **${percentage}%**`);
-                    msg.react('💸')
-                } else {
-                    throw "Percentage only between 1 and 100 allowed."
-                }
+        const value: string = msg.content.split("!")[1].split(" ")[0];
+        const secondary_value: string = msg.content.split("!")[1].split(" ")[1];
+        if (!value || value === "") return true;
+        if (value === "help") {
+            msg.reply(`\`\`\`bash
+!init-evepraisal (register channel)
+!rm-evepraisal   (unregister channel)
+!market          (change market)                | example: !2
+!p number        (change primary percentage)    | example: !p 90
+!s number        (change secondary percentage)  | example: !s 75
+            \`\`\``)
+        } else if (value === "p" && isNumeric(Number(secondary_value))) {
+            if ((Number(secondary_value) < 0) || (Number(secondary_value) > 101)) throw "Percentage only between 1 and 100 allowed."
+            percentages = [Number(secondary_value), percentages[1]];
+            writeStringArray(PERCENTAGE_FILENAME, percentages.map(v=>v.toString()));
+            msg.reply(`Hello PxKn Officer.\nPercentages now changed to: **${percentages}%**`);
+            msg.react('💸')
+        } else if (value === "s" && isNumeric(Number(secondary_value))) {
+            if ((Number(secondary_value) < 0) || (Number(secondary_value) > 101)) throw "Percentage only between 1 and 100 allowed."
+            percentages = [percentages[0], Number(secondary_value)];
+            writeStringArray(PERCENTAGE_FILENAME, percentages.map(v=>v.toString()));
+            msg.reply(`Hello PxKn Officer.\nPercentages now changed to: **${percentages}%**`);
+            msg.react('💸')
+        } else {
+            if (AVAILABLE_MARKETS.indexOf(value.toLowerCase()) > -1) {
+                market = Number(value);
+                writeString(MARKET_FILENAME, market.toString())
+                msg.reply(`Hello PxKn Officer.\nMarket now changed to: **${market}**`);
+                msg.react('📈')
             } else {
-                if (AVAILABLE_MARKETS.indexOf(string.toLowerCase()) > -1) {
-                    market = string;
-                    write(MARKET_FILENAME, market.toString())
-                    msg.reply(`Hello PxKn Officer.\nMarket now changed to: **${market}**`);
-                    msg.react('📈')
-                } else {
-                    throw `Unrecognised market, choose one of the following: ${JSON.stringify(AVAILABLE_MARKETS)}`
-                }
+                throw `Unrecognised market, choose one of the following: ${JSON.stringify(AVAILABLE_MARKETS)}`
             }
         }
         return true;
@@ -133,11 +149,12 @@ client.on('messageCreate', async msg => {
             return null;
         }
         // Check if admin message
-        if (isAdminReply(msg)) {
+        if (isAdminReply(msg, percentages)) {
             return null;
         }
+
         let contentArray = msg.content.split("\n");
-        let input = []
+        let input: string[] = [];
         contentArray.map(line => {
             line = line.trim().replace(/[\s]{2,}/g, " ") //remove extra spaces
             let line_reg = line.trim().match(".+?(?=(\\s[1-9][,0-9]*))");
@@ -157,15 +174,21 @@ client.on('messageCreate', async msg => {
                 quantity = Number(line_reg[1].trim().replace(/[,]/g, ''))
             }
             //Check if item_name is actually an item (helps if item is mis-spelled)
-            let found_item = fuzzy.get(item_name, null, 0.70);
+            let found_item = BuybackItems.getFuzzyItems().get(item_name, null, 0.70);
             if (!found_item) {
-                console.error(`Could not find eve item match for ${item_name}`)
-                return null;
+                found_item = AllItems.getFuzzyItems().get(item_name, null, 0.95); //try all items, but no spell checking
+                if(!found_item){
+                    console.error(`Could not find eve item match for ${item_name}`)
+                    return null;
+                }
             }
-            input.push({ "name": found_item[0][1], "quantity": quantity })
+            input.push(`${quantity} ${found_item[0][1]}`)
         })
+        if(input.length == 0){
+            return null;
+        }
         let response = await api(input, market)
-        reply(msg, market, percentage, response)
+        reply(msg, market, percentages, response)
     } catch (e) {
         console.error("Error: ", e)
         return null;

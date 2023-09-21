@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.3'
 services:
   evepraisal:
     image: evepraisal:latest
@@ -7,7 +7,7 @@ services:
       resources:
         limits:
           cpus: '0.50'
-          memory: 300M
+          memory: 200M
         reservations:
           cpus: '0.25'
           memory: 64M
